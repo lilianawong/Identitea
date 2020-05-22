@@ -32,76 +32,34 @@ import uuid
 from py4web import action, request, abort, redirect, URL, Field, HTTP
 from py4web.utils.form import Form, FormStyleBulma
 from py4web.utils.url_signer import URLSigner
-
+from py4web.utils.tags import Tags
 from yatl.helpers import A
 from . common import db, session, T, cache, auth, signed_url
+from apps.identitea.fixtures import Admin_Check
+
 
 url_signer = URLSigner(session)
+groups = Tags(db.auth_user)
+admin_check = Admin_Check(auth, db, groups)
 
-def get_name_from_email(e):
-    """Given the email of a user, returns the name."""
-    u = db(db.auth_user.email == e).select().first()
-    return "" if u is None else u.first_name + " " + u.last_name
-
+common_fixtures = [db, auth.user, session, url_signer]
+admin_fixtures = common_fixtures + [admin_check]
 
 # The auth.user below forces login.
 @action('index')
-@action.uses(auth.user, url_signer, session, db, 'index.html')
+@action.uses('index.html', *common_fixtures)
 def index():
+    
     return dict(
-        # This is an example of a signed URL for the callback.
-        # See the index.html template for how this is passed to the javascript.
-        posts_url = URL('posts', signer=url_signer),
-        delete_url = URL('delete_post', signer=url_signer),
-        user_email = auth.current_user.get('email'),
-        author_name = auth.current_user.get('first_name') + " " + auth.current_user.get('last_name')
      )
 
+@action('admin')
+@action.uses('admin_panel.html', *common_fixtures)
+def admin_panel():
+    return dict()
 
-@action('posts', method="GET")
-@action.uses(db, auth.user, session, url_signer.verify())
-def get_posts():
-    # You can use this shortcut for testing at the very beginning.
-    # TODO: complete.
-    return {"posts":db.executesql("""
-    SELECT post.id,
-        post.email, post.content, post.post_date, auth_user.first_name || ' ' || auth_user.last_name,
-        post.is_reply, IFNULL(post.is_reply*2,1 + 2 * post.id) as sort,
-        (SELECT COUNT(*) FROM post AS p WHERE post.id = p.is_reply) as children
-        FROM post LEFT JOIN auth_user ON post.email = auth_user.email
-        ORDER BY sort DESC, post.post_date DESC;
-    """,
-     as_dict=True, colnames=["id", "email", "content", "date", "author", "is_reply", "sort", "children"])}
-    #return dict(posts=TEST_POSTS)
+@action('admin_slides')
+@action.uses('admin_slides.html', *common_fixtures)
+def admin_slides():
+    return dict()
 
-
-@action('posts',  method="POST")
-@action.uses(db, auth.user)  # etc.  Put here what you need.
-def save_post():
-    # To help with testing.
-    # TODO: optional.
-    time.sleep(1)
-    if random.random() < 0.5:
-        raise HTTP(500)
-    id = request.json.get('id') # Note: id can be none.
-    content = request.json.get('content')
-    is_reply = request.json.get('is_reply')
-    # TODO: complete.
-    # If id is None, this means that this is a new post that needs to be
-    # inserted.  If id is not None, then this is an update.
-    
-
-    if id == None:
-        id = db.post.insert(user_email=auth.current_user.get('email'), content=content, is_reply=is_reply)
-    else:
-        db(db.post.id == id).update(content=content)
-
-    return dict(content=content, id=id)
-
-
-@action('delete_post',  method="POST")
-@action.uses(db, auth.user, session, url_signer.verify())
-def delete_post():
-    db((db.post.email == auth.current_user.get("email")) &
-       (db.post.id == request.json.get('id'))).delete()
-    return "ok"

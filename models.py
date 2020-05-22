@@ -21,11 +21,53 @@ def get_user_email():
 def get_time():
     return datetime.datetime.utcnow()
 
-db.define_table("post",
-                Field('email', default=get_user_email),
-                Field('content', 'text'),
-                Field('post_date', 'datetime', default=get_time),
-                Field('is_reply', 'reference post'),
+db.define_table("questions",
+                Field('prompt', 'text'),
                 )
+
+db.define_table("answers",
+                Field('qid', 'integer'),
+                Field('text', 'text'),
+                Field('image', 'text'),
+                )
+
+db.define_table("answer_implications",
+                Field('qaid', 'integer'), #question answer id
+                Field('tag_id', 'integer'),
+                Field('consumable_id', 'integer')
+                )
+
+db.define_table("drinks",
+                Field('name', 'text'),
+                Field('description', 'text'),
+                Field('image', 'text')
+                )
+
+db.define_table("drink_attr", 
+                Field("drink_id", 'integer'),
+                Field("consumable_id", 'integer')
+                )
+
+db.define_table("consumable",
+                Field('name', 'text'),
+                Field('description', 'text'),
+                Field('image', 'text')
+                )
+
+db.define_table("consumable_to_tag", 
+                Field('consumable_id', 'integer'),
+                Field('tag_id', 'integer')
+                )
+
+db.define_table("tags", 
+                Field('name', 'text'),
+                Field('description', 'text'),
+                Field('image', 'text')
+                )
+
+
+
+
+
 
 db.commit()

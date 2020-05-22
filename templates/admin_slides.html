@@ -1,0 +1,83 @@
+[[extend 'admin_layout.html']]
+
+<div id="vue-target">
+    <section class="section">
+        <h1 class="title is-1">Edit Slides</h1>
+
+        <div class="columns">
+            <div class="column">
+                <div class="box">
+                    <button class="button">+ Slide</button>
+                    <br><br>
+                    <div class="box">
+                        <div>
+                            
+                        </div>
+                        <hr>
+
+                    </div> 
+
+
+                    <div class="box">
+                        Slide #2
+
+
+
+                        
+                    </div> 
+
+                </div>
+            </div>
+            <div class="column">
+                <div class="box">
+                    <h2 class="title is-2">Global Variables</h2>
+                    <label for="time_per_slide">Time Per Slide</label>
+                    <input class="input" type="text" name="time_per_slide" id="time_per_slide" size="2"></input>
+                    <br><br>
+                    <button class="button">Delete All</button>
+                </div>
+
+                <div class="box">
+                    <h3 class="title is-2">Carousel Preview</h3>
+                    <div class="box">This is where the carousel will live
+
+
+
+                        yup
+                    </div>
+
+                    <div class="box">
+                        <h4 class="title is-4">Carousel Controls</h4>
+                        <hr>
+                        <div class="columns">
+                            <div class="column">
+                                <input class="checkbox" type="checkbox" id="hold_slide" name="hold_slide" value="hold">
+                                <label for="hold_slide">Hold Slide</label>
+                                <br><br>
+                                <label for="slide_number">Slide #</label>
+                                <input class="input" type="text" name="slide_number" id="slide_number" size="2"></input>
+                            </div>
+                            <div class="column">
+                                <button class="button">&lt;</button>
+                                <button class="button">&gt;</button>
+                            </div>
+                        </div>
+                        
+
+                    </div>
+
+
+                </div>
+
+            </div>
+        </div>
+    </section>
+</div>
+
+[[block page_scripts]]
+<!-- Loads the index-specific js for Vue -->
+<script>
+
+</script>
+<script src="js/index.js"></script>
+[[end]]
