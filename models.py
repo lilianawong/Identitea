@@ -66,8 +66,4 @@ db.define_table("tags",
                 )
 
 
-
-
-
-
 db.commit()

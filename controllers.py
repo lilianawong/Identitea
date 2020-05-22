@@ -42,8 +42,8 @@ url_signer = URLSigner(session)
 groups = Tags(db.auth_user)
 admin_check = Admin_Check(auth, db, groups)
 
-common_fixtures = [db, auth.user, session, url_signer]
-admin_fixtures = common_fixtures + [admin_check]
+common_fixtures = [db, session, url_signer]
+admin_fixtures = common_fixtures + [admin_check, auth.user]
 
 # The auth.user below forces login.
 @action('index')
@@ -61,5 +61,12 @@ def admin_panel():
 @action('admin_slides')
 @action.uses('admin_slides.html', *common_fixtures)
 def admin_slides():
-    return dict()
+    return dict(
+        get_slides=URL("admin_getslides", signer=url_signer),
+        delete_slide = URL("admin_delete_slide", signer=url_signer)
+    )
 
+@action('admin_getslides')
+@action.uses('admin_getslides.html', *common_fixtures)
+def admin_slides():
+    return dict()

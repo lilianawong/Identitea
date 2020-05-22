@@ -10,12 +10,51 @@
                     <button class="button">+ Slide</button>
                     <br><br>
                     <div class="box">
-                        <div>
-                            
+                        <div class="level">
+                            <div class="level-left">
+                                <div class="level-item">
+                                    <button class="button">Product</button>
+                                </div>
+                                <div class="level-item">
+                                    <button class="button">Left Portrait</button>
+                                </div>
+                            </div>
+                            <div class="level-right">
+                                <div class="level-item">
+                                    <label>time <input type="text" name="time" size="1"
+                                            maxlength="3"></label>
+                                </div>
+                                <div class="level-item">
+                                    <label>#<input type="text" name="slide_number" size="1"
+                                            maxlength="3"></label>
+                                </div>
+                                <div class="level-item">
+                                    <i class="fa fa-eye" aria-hidden="true"></i>
+                                    <i class="fa fa-eye-slash" aria-hidden="true"></i>
+                                </div>
+                                <div class="level-item">
+                                    <i class="fa fa-trash" aria-hidden="true"></i>
+                                </div>
+                            </div>
                         </div>
                         <hr>
 
-                    </div> 
+                        <div class="columns is-vcentered">
+                            <div class="column is-two-fifths">
+                                <figure class="image is-1by1" width="128">
+                                    <img src="https://bulma.io/images/placeholders/128x128.png">
+                                </figure>
+                            </div>
+                            <div class="column">
+                                <label >Title:<input class="input" type="text" name="title"></label>
+                                <label >Title:<textarea style="resize:none;" class="textarea" placeholder="Description..."></textarea></label>
+                                <label >Price:<input class="input" type="text" name="title"></label>
+                            </div>
+                        </div>
+                        
+
+
+                    </div>
 
 
                     <div class="box">
@@ -23,14 +62,14 @@
 
 
 
-                        
-                    </div> 
+
+                    </div>
 
                 </div>
             </div>
             <div class="column">
                 <div class="box">
-                    <h2 class="title is-2">Global Variables</h2>
+                    <h4 class="title is-4">Global Variables</h4>
                     <label for="time_per_slide">Time Per Slide</label>
                     <input class="input" type="text" name="time_per_slide" id="time_per_slide" size="2"></input>
                     <br><br>
@@ -38,7 +77,7 @@
                 </div>
 
                 <div class="box">
-                    <h3 class="title is-2">Carousel Preview</h3>
+                    <h5 class="title is-5">Carousel Preview</h5>
                     <div class="box">This is where the carousel will live
 
 
@@ -47,7 +86,7 @@
                     </div>
 
                     <div class="box">
-                        <h4 class="title is-4">Carousel Controls</h4>
+                        <h5 class="title is-5">Carousel Controls</h5>
                         <hr>
                         <div class="columns">
                             <div class="column">
@@ -62,7 +101,7 @@
                                 <button class="button">&gt;</button>
                             </div>
                         </div>
-                        
+
 
                     </div>
 
@@ -77,7 +116,8 @@
 [[block page_scripts]]
 <!-- Loads the index-specific js for Vue -->
 <script>
-
+    let get_slides_url = "[[=XML(get_slides)]]";
+    let delete_slide_url = "[[=XML(delete_slide)]]";
 </script>
 <script src="js/index.js"></script>
 [[end]]
