@@ -1,0 +1,97 @@
+[[extend 'layout.html']]
+
+<div id="vue-target">
+  <section class="section">
+    <div class="title">Post-O-Matic</div>
+
+    <!-- This is used to add a post. --->
+    <div class="level">
+      <div class="level-left">
+        <button @click="add_post" class="button is-link" :disabled="isEditing()">
+          <span class="icon"><i class="fa fa-plus"></i></span> <span>Add Post</span>
+            </button>
+      </div>
+    </div>
+
+    <!-- This displays the posts -->
+    <div v-for="post in posts">
+
+      <!-- This displays a main (non-reply) post -->
+      <div class="columns is-mobile">
+        <div :class="post.is_reply ? 'column is-11 is-offset-1 is-size-6' : 'column is-12 is-size-5'">
+
+          <div class="box">
+            <div v-if="!post.edit" @click="do_edit(post._idx)">{{post.content}}</div>
+            <textarea v-if="post.edit" v-model="post.content" class="textarea"
+                      :class="post.content === post.server_content ? 'is-link' : 'is-danger'"
+            ></textarea>
+          </div>
+          <nav class="level is-mobile">
+            <div class="level-left">
+              <!-- Post author -->
+              <div class="level-item has-text-grey">{{post.author}}</div>
+            </div>
+
+            <div class="level-right">
+              <!-- Error notification -->
+              <div v-if="post.error" class="level-item has-text-danger">
+                <i class="fa fa-exclamation-triangle"></i>
+                {{post.error}}
+              </div>
+              <!-- Edit button -->
+              <!-- TODO: implement it -->
+
+              <div v-if="post.email == user_email && !post.edit" class="level-item">
+              <button @click="do_edit(post._idx)"  class="button is-warning" :disabled="isEditing()">
+                <i class="fa fa-fw fa-edit "></i>
+              </button>
+            </div>
+
+              <!-- Save button -->
+              <div v-if="post.edit" class="level-item">
+                <button @click="do_save(post._idx)" class="button is-primary"
+                :class="post.is_pending ? 'is-loading' : ''">
+                <i class="fa fa-check-square-o fa-fw"></i></button></div>
+              <!-- Cancel edit button -->
+              <div v-if="post.edit && !post.is_pending" class="level-item">
+                <button @click="do_cancel(post._idx)" class="button is-danger">
+                <i class="fa fa-close"></i></button></div>
+                
+                <!-- Delete post button, for replies only -->
+              <!-- TODO: implement it -->
+              
+              <div v-if="post.is_reply && post.email == user_email" class="level-item">
+              <button  @click="do_delete(post._idx)" class="button is-danger" :disabled="isEditing()">
+                  <i class="fa fa-trash"></i>
+                </button>
+              </div>
+
+              <!-- Reply button -->
+              <!-- TODO: implement it.  This has to show only for main posts,
+                   and it has to not show while you are editing the post. -->
+                <div v-if="!post.is_reply && !post.edit" class="level-item">
+                   <button  @click="reply(post._idx)" class="button has-background-link" :disabled="isEditing()">
+                  <i class="fa fa-reply"></i>
+                </button>
+              </div>
+                
+              
+            </div>
+          </nav>
+        </div>
+      </div>
+    </div>
+
+  </section>
+</div>
+
+[[block page_scripts]]
+<!-- Loads the index-specific js for Vue -->
+<script>
+  let posts_url = "[[=XML(posts_url)]]";
+  let delete_url = "[[=XML(delete_url)]]";
+  let user_email = "[[=XML(user_email)]]";
+  let author_name = "[[=XML(author_name)]]";
+</script>
+<script src="js/index.js"></script>
+[[end]]
