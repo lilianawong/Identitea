@@ -2,36 +2,49 @@
 // and be used to initialize it.
 let app = {};
 
+function deepCopy(object) {
+    return JSON.parse(JSON.stringify(object))
+}
+
+
 // Given an empty app object, initializes it filling its attributes,
 // creates a Vue instance, and then initializes the Vue instance.
 let init = (app) => {
 
+
     // This is the Vue data.
     app.data = {
-        posts: [], // See initialization.
-        new_post_content: "",
-        user_email: user_email
+        slides: [], // See initialization.
+
+        //globals
+        global_time_per_slide: "--",
+
+        //preview controls
+        preview_hold_slide: true,
+        preview_slide_number: 0,
+        preview_slide_interval: 0, //reference to timer object   
+        //preview data
+        preview_content: {
+            image: "",
+            title: "",
+            description: "",
+            price: ""
+        }
+
     };
 
     app.index = (a) => {
         // Adds to the posts all the fields on which the UI relies.
-        var parent = {};
         let i = 0;
         for (let p of a) {
-            p._idx = i++;
-            // TODO: Only make the user's own posts editable.
-            if (!p.is_reply) {
-                parent = p;
-            } else {
-                p.parent = parent;
-            }
+            //transform all slide data into content and original content, so we 
+            //can check if modifications have been made
+            p.original_content = deepCopy(p)
+            p.content = deepCopy(p.original_content);
+            _.pick(p, ['original_content', 'content'])
 
-            //p.editable = true;
-            p.edit = false;
-            p.is_pending = false;
-            p.error = false;
-            p.original_content = p.content; // Content before an edit.
-            p.server_content = p.content; // Content on the server.
+            //add id after transform so that it doesn't exist in content
+            p._idx = i++;
         }
         return a;
     };
@@ -45,28 +58,149 @@ let init = (app) => {
     };
 
 
-    app.isEditing = function () {
-        return app.data.posts.some(function (element) { return element.edit; });
+    /**
+     * helper function that enforces the hold_slide control
+     */
+    function timer_next_slide() {
+        if (app.preview_hold_slide)
+            app.preview_next()
+    }
+
+    //preview controls
+    app.preview_next = function () {
+        slide_idx = app.data.preview_slide_number;
+        slide_idx = ++slide_idx > app.data.slides.length ? 0 : slide_idx;
+        slide = app.slides[slide_idx];
+        if (!slide) return;
+        clearInterval(app.data.preview_slide_interval);
+        setInterval(timer_next_slide, slide.content.time);
+    }
+
+    app.preview_previous = function () {
+        slide_idx = app.data.preview_slide_number;
+        slide_idx = --slide_idx < 0 ? app.data.slides.length : slide_idx;
+        slide = app.data.slides[slide_idx];
+        if (!slide) return;
+        clearInterval(app.data.preview_slide_interval);
+        setInterval(timer_next_slide, slide.content.time);
+    }
+
+    app.preview_goto = function (slide_idx) {
+        slide = app.data.slides[slide_idx];
+        if (!slide) return;
+        clearInterval(app.data.preview_slide_interval);
+        setInterval(timer_next_slide, slide.content.time);
+    }
+
+    //slide controls
+    app.add_slide = function () {
+        var slide = {
+
+
+        };
+
+        app.data.slides.unshift(slide);
+        app.reindex();
+    }
+
+    app.set_slide_type = function (slide_idx) {
+
+    }
+
+    app.set_slide_layout = function (slide_idx) {
+
+    }
+
+    app.set_time = function (slide_idx) {
+        slide = app.data.slides[slide_idx];
+        //this is done automatically :)
+    }
+
+    app.set_slide_position = function (slide_idx) {
+        slide = app.data.slides[slide_idx];
+        let new_pos = slide.content.slide_number;
+        if (new_pos >= app.data.slides.length) new_pos = app.data.slides.length - 1;
+        if (new_post < 0) new_pos = 0;
+
+    }
+
+    app.set_slide_visible = function (slide_idx, visible) {
+        //auto
+    }
+
+    app.set_slide_deleted = function (slide_idx, isDeleted) {
+        //auto
+    }
+
+    app.set_slide_text = function (slide_idx) {
+        //auto
+    }
+
+    app.set_slide_title = function (slide_idx) {
+        //auto
+    }
+
+    app.set_slide_price = function (slide_idx) {
+        //auto
+    }
+
+    app.set_slide_image = function (slide_idx) {
+        //harder! .. need to upload image from client
+        //then set the url to the resulting position in the server
+    }
+
+    app.delete_all_slides = function () {
+        //all trash
+        app.data.slides.forEach(function (slide) {
+            slide.content.deleted = true;
+        });
+    }
+
+    app.save_all_slides = function () {
+        let slides = app.data.slides
+        .filter(
+            function (element) { 
+                return _.isEqual(element.content, element.original_content) 
+            })
+        .map(function (s) {
+            return s.content;
+        });
+
+        axios.post(post_slides_url, {
+            slides:slides
+        }).then(function(res){}).catch(function(){})
+
     }
 
 
-    app.do_edit = (post_idx) => {
+
+
+    /**
+     * true if any slide has been modified
+     */
+    app.isModified = function () {
+        //find the first element whose content doesnt equal the original content
+        return app.data.slides.some(function (element) { return _.isEqual(element.content, element.original_content) })
+    }
+
+
+    app.do_edit = (slide_idx) => {
         // Handler for button that starts the edit.
         // TODO: make sure that no OTHER post is being edited.
         // If so, do nothing.  Otherwise, proceed as below.
-        let p = app.vue.posts[post_idx];
+        let p = app.vue.posts[slide_idx];
         if (app.isEditing() || user_email != p.email) return;
         p.edit = true;
         p.is_pending = false;
     };
 
-    app.do_cancel = (post_idx) => {
+    app.do_cancel = (slide_idx) => {
         // Handler for button that cancels the edit.
-        let p = app.vue.posts[post_idx];
+        let p = app.vue.posts[slide_idx];
         p.error = "";
         if (p.id === null) {
             // If the post has not been saved yet, we delete it.
-            app.vue.posts.splice(post_idx, 1);
+            app.vue.posts.splice(slide_idx, 1);
             app.reindex();
         } else {
             // We go back to before the edit.
@@ -76,9 +210,9 @@ let init = (app) => {
         }
     }
 
-    app.do_save = (post_idx) => {
+    app.do_save = (slide_idx) => {
         // Handler for "Save edit" button.
-        let p = app.vue.posts[post_idx];
+        let p = app.vue.posts[slide_idx];
         if (p.content == "") {
             p.error = "Post cannot be empty."
             return;
@@ -139,9 +273,9 @@ let init = (app) => {
         app.reindex();
     };
 
-    app.reply = (post_idx) => {
+    app.reply = (slide_idx) => {
         if (app.isEditing()) return;
-        let p = app.vue.posts[post_idx];
+        let p = app.vue.posts[slide_idx];
         if (p.id !== null) {
             // TODO: this is the new reply.  You need to initialize it properly...
             let q = {
@@ -154,11 +288,11 @@ let init = (app) => {
                 author: author_name,
                 email: user_email,
                 is_reply: p.id,
-                error:false,
+                error: false,
             };
 
             q.parent = p;
-            app.vue.posts.splice(post_idx + 1, 0, q);
+            app.vue.posts.splice(slide_idx + 1, 0, q);
             p.children++;
             app.reindex();
             // TODO: and you need to insert it in the right place, and reindex
@@ -166,18 +300,18 @@ let init = (app) => {
         }
     };
 
-    app.do_delete = (post_idx) => {
-        let p = app.vue.posts[post_idx];
+    app.do_delete = (slide_idx) => {
+        let p = app.vue.posts[slide_idx];
         if (p.id === null) {
             // TODO:
             // If the post has never been added to the server, simply deletes it.
             p.parent.children--;
-            app.vue.posts.splice(post_idx, 1);
+            app.vue.posts.splice(slide_idx, 1);
             app.reindex();
         } else {
             axios.post(delete_url, { id: p.id }).then(function () {
                 p.parent.children--;
-                app.vue.posts.splice(post_idx, 1);
+                app.vue.posts.splice(slide_idx, 1);
                 app.reindex();
             });
             // TODO: Deletes it on the server.
@@ -211,49 +345,17 @@ let init = (app) => {
 
     // And this initializes it.
     app.init = () => {
-        // You should load the posts from the server.
-        // This is purely debugging code.
-        /*
-        posts = [
-            // This is a post.
-            {
-                id: 1,
-                content: "I love apples",
-                author: "Joe Smith",
-                email: "joe@ucsc.edu",
-                is_reply: null, // Main post.  Followed by its replies if any.
-            },
-            {
-                id: 2,
-                content: "I prefer bananas",
-                author: "Elena Degiorgi",
-                email: "elena@ucsc.edu",
-                is_reply: 1, // This is a reply.
-            },
-            {
-                id: 3,
-                content: "I prefer bananas",
-                author: "Elena Degiorgi",
-                email: "elena@ucsc.edu",
-                is_reply: 1, // This is a reply.
-            },
-        ];
-        */
-        // We set the posts. This is how it is done in reality. 
 
+        //start carousel timer
+        app.preview_goto(0);
 
-        axios.get(posts_url).then(function (res) {
-            app.vue.posts = app.index(res.data.posts);
+        axios.get(get_slides_url).then(function (res) {
+            app.vue.slides = app.index(res.data.slides);
         });
-
-        //app.vue.posts = app.index(posts);
-        // TODO: Load the posts from the server instead.
     };
 
     // Call to the initializer.
     app.init();
 };
 
-// This takes the (empty) app object, and initializes it,
-// putting all the code i
 init(app);
