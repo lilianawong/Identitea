@@ -64,10 +64,18 @@ db.define_table("tags",
                 Field('description', 'text'),
                 Field('image', 'text')
                 )
-
-
-
-
+db.define_table("slides",
+                Field('type', 'text'),
+                Field('layout', 'text'),
+                Field('time', 'integer'), #ms
+                Field('slide_number', 'integer'),
+                Field('visible', 'boolean'), 
+                Field('deleted', 'boolean'),
+                Field('title', 'text'),
+                Field('description', 'text'),
+                Field('price', 'text'),
+                Field('image', 'text')
+                )
 
 
 db.commit()
