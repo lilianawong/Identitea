@@ -53,6 +53,21 @@ def index():
     return dict(
      )
 
+@action('menu')
+@action.uses('menu.html', *common_fixtures)
+def index():
+    
+    return dict(
+     )
+
+@action('quiz')
+@action.uses('quiz.html', *common_fixtures)
+def index():
+    
+    return dict(
+     )
+
+
 @action('admin')
 @action.uses('admin_panel.html', *common_fixtures)
 def admin_panel():
