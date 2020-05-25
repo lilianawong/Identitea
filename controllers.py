@@ -96,3 +96,15 @@ def admin_slides():
 def admin_slides():
     data = db(db.slides).select().as_list()
     return dict(slides=data)
+
+@action('get_menu_drinks')
+@action.uses(*common_fixtures)
+def get_menu_drinks():
+    
+
+    return [
+    {"category":"milktea" "image":"images/milktea",
+    "drinks":[{"name":"Jasmine Milk Tea",
+    "images":"images/jasminemilk"}]
+    }
+    ]
