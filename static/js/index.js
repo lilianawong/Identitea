@@ -44,7 +44,7 @@ let init = (app) => {
             _.pick(p, ['original_content', 'content'])
 
             //add id after transform so that it doesn't exist in content
-            p._idx = i++;
+            p.slide_idx = i++;
         }
         return a;
     };
@@ -52,8 +52,8 @@ let init = (app) => {
     app.reindex = () => {
         // Adds to the posts all the fields on which the UI relies.
         let i = 0;
-        for (let p of app.vue.posts) {
-            p._idx = i++;
+        for (let p of app.data.slides) {
+            p.slide_idx = i++;
         }
     };
 
@@ -94,9 +94,21 @@ let init = (app) => {
 
     //slide controls
     app.add_slide = function () {
+        var content = {
+            type:"product",
+            layout:"left portrait",
+            time:5000,
+            slide_number:0,
+            visible:true,
+            deleted:false,
+            title: "",
+            description:"",
+            price:"",
+            image:""
+        }
         var slide = {
-
-
+            content:content,
+            original_content:{}
         };
 
         app.data.slides.unshift(slide);
@@ -126,9 +138,13 @@ let init = (app) => {
 
     app.set_slide_visible = function (slide_idx, visible) {
         //auto
+        slide = app.data.slides[slide_idx].content;
+        slide.visible = visible;
     }
 
     app.set_slide_deleted = function (slide_idx, isDeleted) {
+        slide = app.data.slides[slide_idx].content;
+        slide.deleted = isDeleted;
         //auto
     }
 
@@ -188,19 +204,19 @@ let init = (app) => {
         // Handler for button that starts the edit.
         // TODO: make sure that no OTHER post is being edited.
         // If so, do nothing.  Otherwise, proceed as below.
-        let p = app.vue.posts[slide_idx];
-        if (app.isEditing() || user_email != p.email) return;
+        let p = app.data.slides[slide_idx];
+        //if (app.isEditing() || user_email != p.email) return;
         p.edit = true;
         p.is_pending = false;
     };
 
     app.do_cancel = (slide_idx) => {
         // Handler for button that cancels the edit.
-        let p = app.vue.posts[slide_idx];
+        let p = app.data.slides[slide_idx];
         p.error = "";
         if (p.id === null) {
             // If the post has not been saved yet, we delete it.
-            app.vue.posts.splice(slide_idx, 1);
+            app.vue.slides.splice(slide_idx, 1);
             app.reindex();
         } else {
             // We go back to before the edit.
@@ -212,7 +228,7 @@ let init = (app) => {
 
     app.do_save = (slide_idx) => {
         // Handler for "Save edit" button.
-        let p = app.vue.posts[slide_idx];
+        let p = app.vue.slides[slide_idx];
         if (p.content == "") {
             p.error = "Post cannot be empty."
             return;
@@ -252,7 +268,7 @@ let init = (app) => {
         // TODO: this is the new post we are inserting.
         // You need to initialize it properly, completing below, and ...
 
-        if (app.isEditing()) return;
+        //if (app.isEditing()) return;
 
         let q = {
             id: null,
@@ -274,7 +290,7 @@ let init = (app) => {
     };
 
     app.reply = (slide_idx) => {
-        if (app.isEditing()) return;
+        //if (app.isEditing()) return;
         let p = app.vue.posts[slide_idx];
         if (p.id !== null) {
             // TODO: this is the new reply.  You need to initialize it properly...
@@ -328,7 +344,14 @@ let init = (app) => {
         add_post: app.add_post,
         reply: app.reply,
         do_delete: app.do_delete,
-        isEditing: app.isEditing
+        
+        add_slide: app.add_slide,
+        isModified: app.isModified,
+        save_all_slides:app.save_all_slides, 
+        set_slide_visible:app.set_slide_visible,
+        set_slide_deleted: app.set_slide_deleted,
+
+        //isEditing: app.isEditing
     };
 
     app.computed = {

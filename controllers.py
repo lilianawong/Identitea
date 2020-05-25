@@ -69,15 +69,14 @@ def admin_slides():
 
 @action('admin_save_slides', method=['POST'])
 @action.uses(*common_fixtures)
-def admin_slides():
-    return dict(
-        get_slides=URL("admin_getslides", signer=url_signer),
-        delete_slide = URL("admin_delete_slide", signer=url_signer),
-        save_slides = URL("admin_slides", signer=url_signer)
-    )
+def admin_save_slides():
+    
+    
+
+    return
 
 @action('admin_getslides')
-@action.uses('admin_getslides.html', *common_fixtures)
+@action.uses(*common_fixtures)
 def admin_slides():
     data = db(db.slides).select().as_list()
     return dict(slides=data)

@@ -74,7 +74,7 @@ db.define_table("slides",
                 Field('title', 'text'),
                 Field('description', 'text'),
                 Field('price', 'text'),
-                Field('image', 'text')
+                Field('image', 'text') #network only?, upload to static/assets
                 )
 
 
