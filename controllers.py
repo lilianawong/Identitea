@@ -36,6 +36,7 @@ from py4web.utils.tags import Tags
 from yatl.helpers import A
 from . common import db, session, T, cache, auth, signed_url
 from apps.identitea.fixtures import Admin_Check
+from .components.fileupload import FileUpload
 
 
 url_signer = URLSigner(session)
@@ -58,25 +59,33 @@ def index():
 def admin_panel():
     return dict()
 
+file_uploader = FileUpload('up', session)
 @action('admin_slides', method=['GET'])
-@action.uses('admin_slides.html', *common_fixtures)
+@action.uses('admin_slides.html', *common_fixtures, file_uploader)
 def admin_slides():
     return dict(
         get_slides=URL("admin_getslides", signer=url_signer),
         delete_slide = URL("admin_delete_slide", signer=url_signer),
-        save_slides = URL("admin_save_slides", signer=url_signer)
+        save_slides = URL("admin_save_slides", signer=url_signer),
+        uploader=file_uploader(id=1, emitid="slide.slide_idx")
     )
+
 
 @action('admin_save_slides', method=['POST'])
 @action.uses(*common_fixtures)
 def admin_save_slides():
+    insert_slides = [i for i in request.json.get('slides') if i.get('id') == None]
+    update_slides =  [i for i in request.json.get('slides') if i.get('id') != None ] 
+    db.slides.bulk_insert(insert_slides)
     
+    for s in update_slides:
+        db.slides[s.get('id')] = s
     
-
+    #db.slides.bulk_update(update_slides)
     return
 
 @action('admin_getslides')
 @action.uses(*common_fixtures)
 def admin_slides():
-    data = db(db.slides).select().as_list()
+    data = db(db.slides).select(orderby=db.slides.slide_number).as_list()
     return dict(slides=data)

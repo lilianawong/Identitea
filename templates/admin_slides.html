@@ -1,5 +1,9 @@
 [[extend 'admin_layout.html']]
 
+[[block page_head]]
+<link rel="stylesheet" href="[[=URL('static/components/fileupload/fileupload.css')]]">
+[[end]]
+
 <div id="vue-target">
     <section class="section">
         <h1 class="title is-1">Edit Slides</h1>
@@ -10,7 +14,7 @@
                     <button @click="add_slide" class="button">+ Slide</button>
                     <br><br>
 
-                    <div v-for="slide in slides" class="slide box">
+                    <div v-for="slide in slides" class="slide box" @click=preview_goto(slide.slide_idx)>
                         <div class="level">
                             <div class="level-left">
                                 <div class="level-item">
@@ -24,7 +28,7 @@
                             <div class="level-right">
                                 <div class="level-item">
                                     <label>time <input v-model="slide.content.time" type="text" name="time" size="1"
-                                            maxlength="3"></label>
+                                            maxlength="5"></label>
                                 </div>
                                 <div class="level-item">
                                     <label>#<input v-model="slide.content.slide_number" type="text" name="slide_number"
@@ -46,9 +50,12 @@
 
                         <div class="columns is-vcentered">
                             <div class="column is-two-fifths">
-                                <figure class="image is-1by1" width="128">
-                                    <img src="https://bulma.io/images/placeholders/128x128.png">
+                                <figure v-if="slide.content.image" class="image is-1by1" width="128">
+                                    <img :src="slide.content.image">
                                 </figure>
+                                <div v-else style="width:128px; height:128px">
+                                    [[=uploader]]
+                                </div>
                             </div>
                             <div class="column">
                                 <label>Title:<input v-model="slide.content.title" class="input" type="text"
@@ -70,10 +77,10 @@
 
                     <br><br>
                     <button class="button" @click="delete_all_slides()">Delete All</button>
-                    <button class="button" @click="save_all_slides" :disabled="isModified()">Save Changes</button>
+                    <button class="button" @click="save_all_slides" :disabled="!isModified()">Save Changes</button>
                 </div>
 
-                <div class="box">
+                <div class="box"  style="position: sticky; top: 10px;">
                     <h5 class="title is-5">Carousel Preview</h5>
                     <div class="box">
                         <!-- preview slide, uses app.data.preview_content.*-->
@@ -82,7 +89,7 @@
                                 <div class="columns is-vcentered">
                                     <div class="column is-two-fifths">
                                         <figure class="image is-1by1" width="128">
-                                            <img src="https://bulma.io/images/placeholders/128x128.png">
+                                            <img :src="slide.content.image">
                                         </figure>
                                     </div>
                                     <div class="column">
@@ -102,7 +109,7 @@
                         <hr>
                         <div class="columns">
                             <div class="column">
-                                <label><input v-model="preview_hold_slide" class="checkbox" type="checkbox"> Hold
+                                <label><input v-model="preview_hold_slide" @click="preview_hold_slide_toggle()" class="checkbox" type="checkbox"> Hold
                                     Slide</label>
                                 <br><br>
                                 <label>Slide # <input v-model="preview_slide_number" class="input" type="text"
@@ -110,8 +117,8 @@
 
                             </div>
                             <div class="column">
-                                <button @click="" class="button">&lt;</button>
-                                <button @click="" class="button">&gt;</button>
+                                <button @click="preview_previous()" class="button">&lt;</button>
+                                <button @click="preview_next()" class="button">&gt;</button>
                             </div>
                         </div>
 
@@ -134,4 +141,5 @@
     let post_slides_url = "[[=XML(save_slides)]]";
 </script>
 <script src="js/index.js"></script>
+<script src="[[=URL('static/components/fileupload/fileupload.js')]]"></script>
 [[end]]

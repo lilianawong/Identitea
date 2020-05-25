@@ -39,6 +39,7 @@ let init = (app) => {
         for (let p of a) {
             //transform all slide data into content and original content, so we 
             //can check if modifications have been made
+            p.slide_number = i;
             p.original_content = deepCopy(p)
             p.content = deepCopy(p.original_content);
             _.pick(p, ['original_content', 'content'])
@@ -54,6 +55,7 @@ let init = (app) => {
         let i = 0;
         for (let p of app.data.slides) {
             p.slide_idx = i++;
+            p.content.slide_number = p.slide_idx;
         }
     };
 
@@ -62,53 +64,67 @@ let init = (app) => {
      * helper function that enforces the hold_slide control
      */
     function timer_next_slide() {
-        if (app.preview_hold_slide)
+        if (!app.data.preview_hold_slide)
             app.preview_next()
     }
 
     //preview controls
     app.preview_next = function () {
         slide_idx = app.data.preview_slide_number;
-        slide_idx = ++slide_idx > app.data.slides.length ? 0 : slide_idx;
-        slide = app.slides[slide_idx];
+        slide_idx = ++slide_idx >= app.data.slides.length ? 0 : slide_idx;
+        slide = app.data.slides[slide_idx];
         if (!slide) return;
+        app.data.preview_slide_number = slide_idx;
         clearInterval(app.data.preview_slide_interval);
-        setInterval(timer_next_slide, slide.content.time);
+        app.data.preview_slide_interval = setInterval(timer_next_slide, slide.content.time);
     }
 
     app.preview_previous = function () {
         slide_idx = app.data.preview_slide_number;
-        slide_idx = --slide_idx < 0 ? app.data.slides.length : slide_idx;
+        slide_idx = --slide_idx <= 0 ? app.data.slides.length - 1 : slide_idx;
         slide = app.data.slides[slide_idx];
         if (!slide) return;
+        app.data.preview_slide_number = slide_idx;
         clearInterval(app.data.preview_slide_interval);
-        setInterval(timer_next_slide, slide.content.time);
+        app.data.preview_slide_interval = setInterval(timer_next_slide, slide.content.time);
     }
 
     app.preview_goto = function (slide_idx) {
         slide = app.data.slides[slide_idx];
         if (!slide) return;
+        app.data.preview_slide_number = slide_idx;
         clearInterval(app.data.preview_slide_interval);
-        setInterval(timer_next_slide, slide.content.time);
+        app.data.preview_slide_interval = setInterval(timer_next_slide, slide.content.time);
+    }
+
+
+    app.preview_hold_slide_toggle = function () {
+        if (app.data.preview_hold_slide) {
+            slide = app.data.slides[app.data.preview_slide_number];
+            app.data.preview_slide_interval = setInterval(timer_next_slide, slide.content.time)
+            return;
+        }
+        clearInterval(app.data.preview_slide_interval);
+
     }
 
     //slide controls
     app.add_slide = function () {
         var content = {
-            type:"product",
-            layout:"left portrait",
-            time:5000,
-            slide_number:0,
-            visible:true,
-            deleted:false,
+            type: "product",
+            layout: "left portrait",
+            time: 5000,
+            slide_number: 0,
+            visible: true,
+            deleted: false,
             title: "",
-            description:"",
-            price:"",
-            image:""
+            description: "",
+            price: "",
+            image: ""
         }
         var slide = {
-            content:content,
-            original_content:{}
+            content: content,
+            original_content: {}
         };
 
         app.data.slides.unshift(slide);
@@ -137,7 +153,6 @@ let init = (app) => {
     }
 
     app.set_slide_visible = function (slide_idx, visible) {
-        //auto
         slide = app.data.slides[slide_idx].content;
         slide.visible = visible;
     }
@@ -145,7 +160,6 @@ let init = (app) => {
     app.set_slide_deleted = function (slide_idx, isDeleted) {
         slide = app.data.slides[slide_idx].content;
         slide.deleted = isDeleted;
-        //auto
     }
 
     app.set_slide_text = function (slide_idx) {
@@ -173,18 +187,16 @@ let init = (app) => {
     }
 
     app.save_all_slides = function () {
-        let slides = app.data.slides
-        .filter(
-            function (element) { 
-                return _.isEqual(element.content, element.original_content) 
-            })
-        .map(function (s) {
-            return s.content;
-        });
-
+        slides = (app.data.slides.filter(function (a) { return !_.isEqual(a.content, a.original_content) }).map(function (s) { return s.content }))
         axios.post(post_slides_url, {
-            slides:slides
-        }).then(function(res){}).catch(function(){})
+            slides: slides
+        }).then(function (res) {
+            app.data.slides.forEach(function (s) {
+                s.original_content = deepCopy(s.content)
+            });
+        }).catch(function () {
+
+        });
 
     }
 
@@ -196,7 +208,7 @@ let init = (app) => {
      */
     app.isModified = function () {
         //find the first element whose content doesnt equal the original content
-        return app.data.slides.some(function (element) { return _.isEqual(element.content, element.original_content) })
+        return app.data.slides.some(function (element) { return !_.isEqual(element.content, element.original_content) })
     }
 
 
@@ -335,6 +347,11 @@ let init = (app) => {
 
     };
 
+    app.uploadedimage = function(slide_idx, filename){
+        slide = app.data.slides[slide_idx];
+        slide.content.image = filename;
+    }
+
     // We form the dictionary of all methods, so we can assign them
     // to the Vue app in a single blow.
     app.methods = {
@@ -344,12 +361,19 @@ let init = (app) => {
         add_post: app.add_post,
         reply: app.reply,
         do_delete: app.do_delete,
-        
+
         add_slide: app.add_slide,
         isModified: app.isModified,
-        save_all_slides:app.save_all_slides, 
-        set_slide_visible:app.set_slide_visible,
+        save_all_slides: app.save_all_slides,
+        set_slide_visible: app.set_slide_visible,
         set_slide_deleted: app.set_slide_deleted,
+
+        preview_next: app.preview_next,
+        preview_previous: app.preview_previous,
+        preview_goto: app.preview_goto,
+        preview_hold_slide_toggle: app.preview_hold_slide_toggle,
+
+        uploadedimage:app.uploadedimage,
 
         //isEditing: app.isEditing
     };

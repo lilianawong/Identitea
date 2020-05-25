@@ -37,6 +37,10 @@ db.define_table("answer_implications",
                 Field('consumable_id', 'integer')
                 )
 
+db.define_table("drink_categories",
+                Field("name", "text"),
+                Field("image","text"))
+
 db.define_table("drinks",
                 Field('name', 'text'),
                 Field('description', 'text'),
@@ -64,6 +68,7 @@ db.define_table("tags",
                 Field('description', 'text'),
                 Field('image', 'text')
                 )
+
 db.define_table("slides",
                 Field('type', 'text'),
                 Field('layout', 'text'),
