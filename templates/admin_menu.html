@@ -1,0 +1,50 @@
+[[extend 'admin_layout.html']]
+
+[[block page_head]]
+<link rel="stylesheet" href="[[=URL('static/components/fileupload/fileupload.css')]]">
+[[end]]
+
+<div id="vue-target">
+    <section class="section">
+        <div class="container">
+            <h1 class="title is-1">Edit Menu Items</h1>
+
+            <div class="columns is-centered is-vcentered is-mobile">
+                <div class="column is-narrow has-text-centered" style="max-width:1176px;">
+                    <div v-for="c in categories">
+                        <div>
+                            <img :src="c.image">
+                        </div>
+                        <div v-for="d in c.drinks">
+                            <div v-if="d.isEditing == false">
+                                <img :src="d.image">
+                                <h3>{{ d.name }}</h3>
+                            </div>
+                            <div v-else>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+
+
+
+        </div>
+
+
+
+    </section>
+</div>
+
+[[block page_scripts]]
+<!-- Loads the index-specific js for Vue -->
+<script>
+    let get_slides_url = "[[=XML(get_slides)]]";
+    let delete_slide_url = "[[=XML(delete_slide)]]";
+    let post_slides_url = "[[=XML(save_slides)]]";
+</script>
+<script src="js/index.js"></script>
+<script src="[[=URL('static/components/fileupload/fileupload.js')]]"></script>
+[[end]]
