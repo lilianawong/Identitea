@@ -2,162 +2,153 @@
 
 <div id="vue-target">
     <div> Soon to be menu homepage </div>
-</div>
-<section class="section has-background-black">
-    <div class="container ">
-        <div class="columns">
-            <div class="column is-two-thirds">
-                <section class="hero">
-                    <div class="hero-body is-paddingless">
-                        <div class="container">
 
-                            <h1 class="title has-text-success">Identitea Boba & Poke Menu
-                            </h1>
+    <section class="section has-background-black">
+        <div class="container ">
+            <div class="columns">
+                <div class="column is-two-thirds">
+                    <section class="hero">
+                        <div class="hero-body is-paddingless">
+                            <div class="container">
+
+                                <h1 class="title has-text-success">Identitea Boba & Poke Menu
+                                </h1>
+                            </div>
+                        </div>
+                    </section>
+                    <br />
+
+                </div>
+
+
+            </div>
+
+            <div v-for="c in category">
+                <div class="comtainer">
+                    <div class="columns is-centered">
+                            <div class='column is-half'>
+                            <img :src="c.image" width="400" height="400" alt="milktea logo"></img>
                         </div>
                     </div>
-                </section>
-                <br />
-
-            </div>
-
-
-        </div>
-        <div class="container">
-            <div class="columns is-centered">
-                    <div class="collum is-half">
-                
-                    <img src="images/milktea.PNG " width="400" height="400" alt="ucsc banner">
-                 </div>
-            </div>
-        </div>   
-        <div class="columns is-text-right is-centered">
-            
-            
-            <div class="column has-text-centered is-2">
-             
-                <img src="images/jasminemilk.jpg " width="200" height="200" alt="ucsc banner">
-            
-                <p class="has-text-success"> Jasmine Milk Tea</p>
-            
-            </div>
-            <div class="column has-text-centered is-2">
-
-                <img src="images/assammilk.jpg " width="200" height="200" alt="ucsc banner">
-                <p class="has-text-success"> Assam Milk Tea</p>
-            </div>
-            <div class="column has-text-centered is-2">
-
-                <img src="images/matchalatte.jpg " width="200" height="200" alt="ucsc banner">
-                <p class="has-text-success"> Matcha Latte</p>
-            </div>
-            <div class="column has-text-centered is-2">
-
-                <img src="images/oolongmilk.jpg " width="200" height="200" alt="ucsc banner">
-                <p class="has-text-success"> Oolong Milk Tea</p>
-            </div>
-
-
-        </div>
-
-
-
-        <div class="container">
-            <div class="columns is-centered">
-                    <div class="collum is-half">
-                
-                    <img src="images/creamseries.PNG " width="400" height="400" alt="ucsc banner">
-                    
-                 </div>
-            </div>
-        </div> 
-        <div class="columns is-text-right is-centered">
-            <div class="column has-text-centered is-2">
-
-                <img src="images/greencream.jpg " width="200" height="200" alt="ucsc banner">
-                <p class="has-text-success"> Jasmine Milk Tea</p>
-            </div>
-            <div class="column has-text-centered is-2">
-
-                <img src="images/blackcream.jpg " width="200" height="150" alt="ucsc banner">
-                <p class="has-text-success"> Black Milk Tea</p>
-            </div>
-            <div class="column has-text-centered is-2">
-
-                <img src="images/matchalatte.jpg " width="200" height="200" alt="ucsc banner">
-                <p class="has-text-success"> Matcha Tea</p>
-            </div>
-
-
-        </div>
-
-        <div class="container">
-            <div class="columns is-centered">
-                    <div class="collum is-half">
-                
-                    <img src="images/signature.PNG " width="400" height="400" alt="ucsc banner">
-                 </div>
-            </div>
-        </div> 
-        <div class="columns is-text-right is-centered">
-            <div class="column has-text-centered is-2">
-
-                <img src="images/mangomilk.jpg " width="200" height="200" alt="ucsc banner">
-                <p class="has-text-success"> Mango Milk Bar</p>
+                </div>
                
-            </div>
-            <div class="column has-text-centered is-2">
-
-                <img src="images/strawgreentea.jpg " width="200" height="150" alt="ucsc banner">
-                <p class="has-text-success"> Strawberry Mint Refresher</p>
-            </div>
-            <div class="column has-text-centered is-2">
-
-                <img src="images/mangomatcha.jpg " width="200" height="200" alt="ucsc banner">
-                <p class="has-text-success"> Mango Matcha</p>
-            </div>
-
-
-        </div>
-
-        <div class="columns is-text-right is-centered">
-            <div class="column has-text-centered is-2">
-
-                <img src="images/dulcedeleche.jpg " width="200" height="200" alt="ucsc banner">
-                <p class="has-text-success"> Dulce De Leche</p>
-               
-            </div>
-            <div class="column has-text-centered is-2">
-
-                <img src="images/strawmilk.jpg " width="200" height="150" alt="ucsc banner">
-                <p class="has-text-success"> Strawberry Milk Bar</p>
-            </div>
-        
-
-
-        </div>
-
-        <div class="columns is-text-right is-centered">
-            <div class="column has-text-centered is-4">
-
-                <img src="images/pokemenu1.jpg " width="300" height="300" alt="ucsc banner">
-            </div>
-            <div class="column">
-
-                <img src="images/pokemenu2.jpg " width="300" height="300" alt="ucsc banner">
-            </div>
-           
+                <div class="columns is-text-right is-centered is-multiline">
+                    <div v-for="d in c.drinks" class="column  has-text-centered is-one-fifth">
+                        <div  @click="activatemodal(d.name,d.description,d.images)">
+                            <img :src="d.images" width="200" height="200" alt="ucsc banner"></img>
+                            <div class="has-text-success">{{d.name}}</div>
+                        </div>
                         
+                    </div>
+                </div>
 
+            </div>
+
+
+
+
+
+
+
+            <div class="container">
+                <div class="columns is-centered">
+                    <div class="collum is-half">
+
+                        <img src="images/creamseries.PNG " width="400" height="400" alt="ucsc banner">
+
+                    </div>
+                </div>
+            </div>
+            <div class="columns is-text-right is-centered">
+                <div class="column has-text-centered is-2">
+
+                    <img src="images/greencream.jpg " width="200" height="200" alt="ucsc banner">
+                    <p class="has-text-success"> Jasmine Milk Tea</p>
+                </div>
+                <div class="column has-text-centered is-2">
+
+                    <img src="images/blackcream.jpg " width="200" height="150" alt="ucsc banner">
+                    <p class="has-text-success"> Black Milk Tea</p>
+                </div>
+                <div class="column has-text-centered is-2">
+
+                    <img src="images/matchalatte.jpg " width="200" height="200" alt="ucsc banner">
+                    <p class="has-text-success"> Matcha Tea</p>
+                </div>
+
+
+            </div>
+
+            <div class="container">
+                <div class="columns is-centered">
+                    <div class="collum is-half">
+
+                        <img src="images/signature.PNG " width="400" height="400" alt="ucsc banner">
+                    </div>
+                </div>
+            </div>
+            <div class="columns is-text-right is-centered">
+                <div class="column has-text-centered is-2">
+
+                    <img src="images/mangomilk.jpg " width="200" height="200" alt="ucsc banner">
+                    <p class="has-text-success"> Mango Milk Bar</p>
+
+                </div>
+                <div class="column has-text-centered is-2">
+
+                    <img src="images/strawgreentea.jpg " width="200" height="150" alt="ucsc banner">
+                    <p class="has-text-success"> Strawberry Mint Refresher</p>
+                </div>
+                <div class="column has-text-centered is-2">
+
+                    <img src="images/mangomatcha.jpg " width="200" height="200" alt="ucsc banner">
+                    <p class="has-text-success"> Mango Matcha</p>
+                </div>
+
+
+            </div>
+
+            <div class="columns is-text-right is-centered">
+                <div class="column has-text-centered is-2">
+
+                    <img src="images/dulcedeleche.jpg " width="200" height="200" alt="ucsc banner">
+                    <p class="has-text-success"> Dulce De Leche</p>
+
+                </div>
+                <div class="column has-text-centered is-2">
+
+                    <img src="images/strawmilk.jpg " width="200" height="150" alt="ucsc banner">
+                    <p class="has-text-success"> Strawberry Milk Bar</p>
+                </div>
+
+
+
+            </div>
+
+            <div class="columns is-text-right is-centered">
+                <div class="column has-text-centered is-4">
+
+                    <img src="images/pokemenu1.jpg " width="300" height="300" alt="ucsc banner">
+                </div>
+                <div class="column">
+
+                    <img src="images/pokemenu2.jpg " width="300" height="300" alt="ucsc banner">
+                </div>
+
+
+
+            </div>
+
+
+            [[block page_scripts]]
+            <!-- Loads the index-specific js for Vue -->
+            <script>
+                let get_category_url = "[[=XML(get_category)]]";
+
+            </script>
+            <script src="js/menu.js"></script>
+            [[end]]
         </div>
 
-
-        [[block page_scripts]]
-        <!-- Loads the index-specific js for Vue -->
-        <script>
-
-
-        </script>
-        <script src="js/menu.js"></script>
-        [[end]]
-    </div>
-</section>
+    </section>
+</div>

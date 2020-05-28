@@ -9,9 +9,9 @@ let init = (app) => {
 
     // This is the Vue data.
     app.data = {
-    drinks:[],
+        category: [],
     };
-   
+
     // Add here the various functions you need.
 
 
@@ -21,7 +21,7 @@ let init = (app) => {
         let idx = 0;
         for (p of a) {
             p._idx = idx++;
-            p._hover_thumbs = false;
+
             // Add here whatever other attributes should be part of a post.
         }
         return a;
@@ -31,24 +31,24 @@ let init = (app) => {
     // to the Vue app in a single blow.
     app.methods = {
         // Complete.
-        goto_page:function(page_name){
-            
-            //pre-init
-            if(page_name == "posts"){
+        goto_page: function (page_name) {
 
-            }else if(page_name == "add_post"){
+            //pre-init
+            if (page_name == "posts") {
+
+            } else if (page_name == "add_post") {
                 app.vue.new_post_text = "";
             }
 
             app.vue.page = page_name
         },
         descrip: function () {
-          
+
         },
-        like: function (post_idx)
-        {let post = app.vue.posts[post_idx];
-            let url = rating_url + '&post_id=' +  post.id
-            url = url + "&rating="+ (post.user_rating == 1 ? 3 : 1)
+        like: function (post_idx) {
+            let post = app.vue.posts[post_idx];
+            let url = rating_url + '&post_id=' + post.id
+            url = url + "&rating=" + (post.user_rating == 1 ? 3 : 1)
             axios.post(url, {}).then(
                 function (res) {
                     post.user_rating = res.data.rating;
@@ -69,27 +69,33 @@ let init = (app) => {
                 }
             );
         },
-        hovThumb:function(p, h){
+        hovThumb: function (p, h) {
             p._hover_thumbs = h;
         },
-        deleted:function(post_idx){
+        deleted: function (post_idx) {
             let post = app.vue.posts[post_idx];
-            axios.post(delete_url + "&post_id="+post.id, {}).then(
-                function(res){
+            axios.post(delete_url + "&post_id=" + post.id, {}).then(
+                function (res) {
                     app.init();
                 }
             )
         },
- 
-    };
+        activatemodal: function (name, description, images) {
+            
 
+
+        },
+    };
+    app.mthods = {
+        activatemodal: app.activatemodal,
+    };
     // This creates the Vue instance.
     app.vue = new Vue({
         el: "#vue-target",
         data: app.data,
         methods: app.methods
     });
-    
+
 
     // And this initializes it.
     //Generally thus will be a network call to the server to load the data 
@@ -97,9 +103,9 @@ let init = (app) => {
     app.init = () => {
         // We load the posts from the server using axios library
         //result.data contains the response result,data.posts contains the attribute
-        axios.get(get_drinks_url).then((result) => {
-            app.vue.drinks = app.reindex(result.data.drinks);
-        
+        axios.get(get_category_url).then((result) => {
+            app.vue.category = app.reindex(result.data.category);
+
         })
     };
 

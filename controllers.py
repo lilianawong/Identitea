@@ -56,9 +56,8 @@ def index():
 @action('menu')
 @action.uses('menu.html', *common_fixtures)
 def index():
-    
-    return dict(
-     )
+       
+    return dict( get_category= URL("get_menu_drinks"))
 
 @action('quiz')
 @action.uses('quiz.html', *common_fixtures)
@@ -77,6 +76,7 @@ def admin_panel():
 @action.uses('admin_slides.html', *common_fixtures)
 def admin_slides():
     return dict(
+        
         get_slides=URL("admin_getslides", signer=url_signer),
         delete_slide = URL("admin_delete_slide", signer=url_signer),
         save_slides = URL("admin_save_slides", signer=url_signer)
@@ -102,9 +102,19 @@ def admin_slides():
 def get_menu_drinks():
     
 
-    return [
-    {"category":"milktea" "image":"images/milktea",
-    "drinks":[{"name":"Jasmine Milk Tea",
-    "images":"images/jasminemilk"}]
+    return dict(category=[
+    {"category":"milktea",
+     "image":"images/milktea.png",
+     "drinks":[{
+        "name":"Jasmine Milk Tea",
+        "images":"images/jasminemilk.jpg",
+        "description":"Fresh Green Tea"},
+        {"name":"Jasmine Milk Tea",
+        "images":"images/jasminemilk.jpg",
+        "description":"Fresh Green Tea"}
+        
+       ]
     }
-    ]
+    
+    
+    ])
