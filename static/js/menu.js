@@ -10,6 +10,11 @@ let init = (app) => {
     // This is the Vue data.
     app.data = {
         category: [],
+        modalIsActive: false,
+        modalname:"", 
+        modaldescription:"",
+        modalimages:"",
+
     };
 
     // Add here the various functions you need.
@@ -80,15 +85,23 @@ let init = (app) => {
                 }
             )
         },
+        close:function(){
+            app.data.modalIsActive = false;
+            
+        },
         activatemodal: function (name, description, images) {
             
-
+            app.data.modalIsActive = true;
+            app.data.modalname=name
+            app.data.modaldescription=description
+            app.data.modalimages=images
+            
+            
 
         },
+        
     };
-    app.mthods = {
-        activatemodal: app.activatemodal,
-    };
+    
     // This creates the Vue instance.
     app.vue = new Vue({
         el: "#vue-target",
