@@ -1,170 +1,214 @@
 [[extend 'layout.html']]
 
+[[block page_head]]
+<link href="css/bulma-carousel.min.css" rel="stylesheet">
+[[end]]
+
 <div id="fb-root"></div>
-<script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v7.0"></script>
+<script async defer crossorigin="anonymous"
+  src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v7.0"></script>
 
 <div id="vue-target">
+
+  <section class="section has-background-black">
+    <div class="container" style="overflow: hidden;">
+      <div class="columns">
+        <div class="column is-two-thirds">
+          <section class="hero">
+            <div class="hero-body is-paddingless">
+              <div class="container">
+
+                <h1 class="title has-text-success">Welcome to Identitea!
+                </h1>
+              </div>
+            </div>
+          </section>
+          <br />
+
+        </div>
+
+
+      </div>
+
+
+      <div class="carousel">
+        <div v-for=" (slide, i) in slides" v-bind:class="['item-' + (i+1) ]">
+          <div class="slide box has-background-black">
+            <div class="columns is-vcentered">
+              <div class="column is-two-fifths" style="text-align: center;">
+
+                <img class="niceimage" :src="slide.content.image" style="height:300px; width:auto;">
+
+              </div>
+              <div class="column has-text-white">
+                <div>
+                  <h3 class="title is-3 has-text-success">{{ slide.content.title }}</h3>
+                </div>
+                <div>{{ slide.content.description }}</div>
+                <div>{{ slide.content.price }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <br>
+      <hr class="has-text-success has-background-success">
+      <br>
+
+
+      <div class="columns  is-vcentered">
+        <div class="column is-two-fifths">
+
+          <img src="images/pokeandboba.jpg " class="niceimage" style="width:100%;" alt="ucsc banner">
+        </div>
+        <div class="column has-text-white">
+
+          "With years of training towards becoming the boba connoisseur we decided to create our own shop Identitea.
+          from travelling to the most popular boba shops around San Francisco, Los Angeles, and San Jose. Two brothers
+          decided to combine their skills towards crafting each drink to create Identitea SF. We promise to provide
+          fresh
+          brewed tea and fresh poke to our customers. We appreciate cunstructive criticism from our customers because
+          our
+          goal is to provide a qualiTEA experience in our shop."
+          </br>
+          </br>
+          -Alberto and Pablo
+
+
+        </div>
+      </div>
+
+
+    </div>
+
+
+
+  </section>
+  <section class="section has-background-black">
+    <div class="container ">
+      <div class="columns">
+        <div class="column is-two-thirds">
+          <section class="hero">
+            <div class="hero-body is-paddingless">
+              <div class="container">
+
+                <h2 class="title has-text-success">Follow Our Social Medias!
+                </h2>
+              </div>
+            </div>
+          </section>
+          <br />
+
+        </div>
+
+
+      </div>
+      <div class="columns">
+        <div class="column ">
+          <div class="niceimage"
+            style=" margin-left: auto;margin-right:auto; text-align: center; width:300px; height:398px">
+            <div class="fb-page" data-href="https://www.facebook.com/identiteasf" data-tabs="timeline" data-width="291"
+              data-height="390" data-small-header="false" data-adapt-container-width="true" data-hide-cover="false"
+              data-show-facepile="false">
+              <blockquote cite="https://www.facebook.com/identiteasf" class="fb-xfbml-parse-ignore">
+                <a href="https://www.facebook.com/identiteasf">Identitea</a></blockquote>
+            </div>
+          </div>
+
+        </div>
+        <div class="column" style="text-align:center;">
+          <img class=" niceimage" src="images/strawgreentea.jpg " width="300" height="250" alt="boba"></a>
+        </div>
+
+
+
+        <div class="column" style="text-align:center;">
+          <a href="[[=URL('quiz')]]">
+            <img class=" niceimage" src="images/hawiianpoke.jpg " width="300" height="300" alt="boba"></a>
+        </div>
+      </div>
+
+
+    </div>
+  </section>
+
+  <section class="section has-background-black">
+    <div class="container ">
+      <div class="columns">
+        <div class="column is-two-thirds">
+          <section class="hero">
+            <div class="hero-body is-paddingless">
+              <div class="container">
+
+                <h2 class="title has-text-success">Location
+                </h2>
+              </div>
+            </div>
+          </section>
+          <br />
+
+        </div>
+
+
+      </div>
+      <div class="columns">
+
+        <div class="column">
+          <iframe width="600" height="450" frameborder="0" style="border:0"
+            src="https://www.google.com/maps/embed/v1/place?q=place_id:ChIJDzhhX4N_j4ARIWj9X6-E-lw&key=AIzaSyCP1u6wT1HHgECLSMNSoRiR9N5B3mH5qdg"
+            allowfullscreen></iframe>
+
+          <p class="has-text-success">Address: </p>
+          <p class="has-text-white">
+            3109 24th St, San Francisco, CA 94110
+            </br>
+            </br>
+          </p>
+          <p class="has-text-success">Phone Number: </p>
+          <p class="has-text-white">
+            (415) 861-9881
+            </br>
+            </br>
+          </p>
+          <p class="has-text-success">Order: </p>
+          <p class="has-text-white">
+            <a href="https://postmates.com/" target="_blank">https://postmates.com/</a>
+            </br>
+            </br>
+          </p>
+
+
+        </div>
+
+
+        <div class="column">
+          <img class="is-pulled-right niceimage" src="images/location.jpg " width="400" height="350" alt="boba">
+        </div>
+
+        <div class="column">
+
+          <img class="is-pulled-right niceimage" src="images/poke1.jpg" width="400" height="400" alt="boba">
+        </div>
+
+
+
+      </div>
+
+    </div>
+
+  </section>
 </div>
-<section class="section has-background-black">
-  <div class="container ">
-    <div class="columns">
-      <div class="column is-two-thirds">
-        <section class="hero">
-          <div class="hero-body is-paddingless">
-            <div class="container">
-
-              <h1 class="title has-text-success">Welcome to Identitea!
-              </h1>
-            </div>
-          </div>
-        </section>
-        <br />
-
-      </div>
-
-
-    </div>
-    <div class="columns">
-    <div class="column">
-
-      <img src="images/pokeandboba.jpg " width="400" height="400" alt="ucsc banner">
-    </div>
-    <div class="column">
-      <p class="has-text-white">
-        "With years of training towards becoming the boba connoisseur we decided to create our own shop Identitea.
-        from travelling to the most popular boba shops around San Francisco, Los Angeles, and San Jose. Two brothers
-        decided to combine their skills towards crafting each drink to create Identitea SF. We promise to provide fresh
-        brewed tea and fresh poke to our customers. We appreciate cunstructive criticism from our customers because our
-        goal is to provide a qualiTEA experience in our shop."
-        </br>
-        </br>
-        -Alberto and Pablo
-
-      </p>
-    </div>
-  </div>
-
-
-  </div>
-
-
-  </div>
-
-  </div>
-  </div>
-</section>
-<section class="section has-background-black">
-  <div class="container ">
-    <div class="columns">
-      <div class="column is-two-thirds">
-        <section class="hero">
-          <div class="hero-body is-paddingless">
-            <div class="container">
-
-              <h2 class="title has-text-success">Follow Our Social Medias!
-              </h2>
-            </div>
-          </div>
-        </section>
-        <br />
-
-      </div>
-
-
-    </div>
-    <div class="columns">
-      <div class="column ">
-       
-        <div class="fb-page" data-href="https://www.facebook.com/identiteasf" 
-        data-tabs="timeline" data-width="300" data-height="300" data-small-header="false" 
-        data-adapt-container-width="true" data-hide-cover="false" data-show-facepile="false">
-        <blockquote cite="https://www.facebook.com/identiteasf" class="fb-xfbml-parse-ignore">
-          <a href="https://www.facebook.com/identiteasf">Identitea</a></blockquote></div>
-
-      </div>
-      <div class="column ">
-        <img class="is-pulled-right" src="images/findyourid.jpg " width="300" height="250" alt="boba" ></a>
-      </div>
-      
-     
-
-      <div class="column">
-        <a href="[[=URL('quiz')]]">
-         <img class="is-pulled-right" src="images/hawiianpoke.jpg " width="300" height="300" alt="boba" ></a>
-      </div>
-    </div>
-
-  </div>
-  </div>
-</section>
-
-<section class="section has-background-black">
-  <div class="container ">
-    <div class="columns">
-      <div class="column is-two-thirds">
-        <section class="hero">
-          <div class="hero-body is-paddingless">
-            <div class="container">
-
-              <h2 class="title has-text-success">Location
-              </h2>
-            </div>
-          </div>
-        </section>
-        <br />
-
-      </div>
-
-
-    </div>
-    <div class="columns">
-
-      <div class="column">
-        <img class="is-pulled-right" src="images/location.jpg " width="400" height="350" alt="boba">
-      </div>
-
-      <div class="column">
-        
-        <img class="is-pulled-right" src="images/poke1.jpg" width="400" height="400" alt="boba">
-      </div>
-
-      <div class="column">
-        <p class="has-text-success">Address: </p>
-        <p class="has-text-white">
-          3109 24th St, San Francisco, CA 94110
-          </br>
-          </br>
-        </p>
-        <p class="has-text-success">Phone Number: </p>
-        <p class="has-text-white">
-          (415) 861-9881
-          </br>
-          </br>
-        </p>
-        <p class="has-text-success">Order: </p>
-        <p class="has-text-white">
-          <a href="https://postmates.com/"target="_blank">https://postmates.com/</a>
-          </br>
-          </br>
-        </p>
-
-
-      </div>
-
-    </div>
-
-  </div>
-  </div>
-</section>
-
-
-
 
 [[block page_scripts]]
-<!-- Loads the index-specific js for Vue -->
-<script>
 
- 
+<script>
+  let get_slides_url = "[[=XML(get_slides)]]";
+
 </script>
+<!-- Loads the index-specific js for Vue -->
+<script src="js/bulma-carousel.js"></script>
+<script src="js/index.js"></script>
+
 
 [[end]]

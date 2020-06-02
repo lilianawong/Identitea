@@ -79,7 +79,7 @@ let init = (app) => {
         // We load the posts from the server using axios library
         //result.data contains the response result,data.posts contains the attribute
         axios.get(get_category_url).then((result) => {
-            app.vue.category = app.reindex(result.data.category);
+            app.vue.category = app.reindex(result.data.categories);
 
         })
     };

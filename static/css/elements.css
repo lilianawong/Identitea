@@ -23,3 +23,10 @@
 .textarea:-ms-input-placeholder {
   color: rgba(54, 54, 54, 0.7);
 }
+
+
+.niceimage{
+  border-radius:10px;
+  border: 2px solid #23d160;
+}
+

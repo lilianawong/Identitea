@@ -23,18 +23,18 @@
             </div>
 
             <div v-for="c in category">
-                <div class="comtainer">
+                <div class="container">
                     <div class="columns is-centered">
-                        <div class='column is-half'>
-                            <img :src="c.image" width="400" height="400" alt="milktea logo"></img>
+                        <div class='column  has-text-centered'>
+                            <img  :src="c.image" style="height: 20vh; width: auto;" alt="milktea logo"></img>
                         </div>
                     </div>
                 </div>
 
                 <div class="columns is-text-right is-centered is-multiline">
                     <div v-for="d in c.drinks" class="column  has-text-centered is-one-fifth">
-                        <div v-on:click="activatemodal(d.name,d.description,d.images)">
-                            <img :src="d.images" width="200" height="200" alt="boba"></img>
+                        <div v-on:click="activatemodal(d.name,d.description,d.image)">
+                            <img :src="d.image" width="200" height="200" alt="boba"></img>
                             <div class="has-text-success">{{d.name}}</div>
                         </div>
 
@@ -43,7 +43,7 @@
             </div>
 
             <div class="modal" v-bind:class="{'is-active':modalIsActive}">
-                <div class="modal-background"></div>
+                <div @click="close" class="modal-background"></div>
                 <div class="modal-content">
                     <div class="box">
                         <div class="content has-text-centered">

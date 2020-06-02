@@ -51,13 +51,14 @@ admin_fixtures = common_fixtures + [admin_check, auth.user]
 @action.uses('index.html', *common_fixtures)
 def index():    
     return dict(
+        get_slides=URL("admin_getslides", signer=url_signer),
      )
 
 @action('menu')
 @action.uses('menu.html', *common_fixtures)
 def index():
        
-    return dict( get_category= URL("get_menu_drinks"))
+    return dict( get_category= URL("get_menu_items"))
 
 @action('quiz')
 @action.uses('quiz.html', *common_fixtures)
