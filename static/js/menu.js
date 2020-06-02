@@ -47,44 +47,6 @@ let init = (app) => {
 
             app.vue.page = page_name
         },
-        descrip: function () {
-
-        },
-        like: function (post_idx) {
-            let post = app.vue.posts[post_idx];
-            let url = rating_url + '&post_id=' + post.id
-            url = url + "&rating=" + (post.user_rating == 1 ? 3 : 1)
-            axios.post(url, {}).then(
-                function (res) {
-                    post.user_rating = res.data.rating;
-                    post.liked = res.data.post.liked;
-                    post.disliked = res.data.post.disliked;
-                }
-            );
-        },
-        dislike: function (post_idx) {
-            let post = app.vue.posts[post_idx];
-            let url = rating_url + "&post_id=" + post.id;
-            url = url + "&rating=" + (post.user_rating == 0 ? 3 : 0);
-            axios.post(url, {}).then(
-                function (res) {
-                    post.user_rating = res.data.rating;
-                    post.disliked = res.data.post.disliked;
-                    post.liked = res.data.post.liked;
-                }
-            );
-        },
-        hovThumb: function (p, h) {
-            p._hover_thumbs = h;
-        },
-        deleted: function (post_idx) {
-            let post = app.vue.posts[post_idx];
-            axios.post(delete_url + "&post_id=" + post.id, {}).then(
-                function (res) {
-                    app.init();
-                }
-            )
-        },
         close:function(){
             app.data.modalIsActive = false;
             

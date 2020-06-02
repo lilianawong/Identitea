@@ -1,7 +1,9 @@
 [[extend 'layout.html']]
 
+<div id="fb-root"></div>
+<script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v7.0"></script>
+
 <div id="vue-target">
-  <div> Soon to be identitea homepage </div>
 </div>
 <section class="section has-background-black">
   <div class="container ">
@@ -59,7 +61,7 @@
           <div class="hero-body is-paddingless">
             <div class="container">
 
-              <h2 class="title has-text-success">Want to find your Identitea?
+              <h2 class="title has-text-success">Follow Our Social Medias!
               </h2>
             </div>
           </div>
@@ -71,18 +73,24 @@
 
     </div>
     <div class="columns">
-      <div class="column is-two-thirds">
+      <div class="column ">
        
-        <p class="has-text-white"> Take our quiz to find your perfect boba match by clicking the image to the right. 
-          With a truly complex quiz that has been tested by elite scholars (jk don't sue) we can find your perfect drink 
-          with just a few clicks. </p>
+        <div class="fb-page" data-href="https://www.facebook.com/identiteasf" 
+        data-tabs="timeline" data-width="300" data-height="300" data-small-header="false" 
+        data-adapt-container-width="true" data-hide-cover="false" data-show-facepile="false">
+        <blockquote cite="https://www.facebook.com/identiteasf" class="fb-xfbml-parse-ignore">
+          <a href="https://www.facebook.com/identiteasf">Identitea</a></blockquote></div>
 
       </div>
+      <div class="column ">
+        <img class="is-pulled-right" src="images/findyourid.jpg " width="300" height="250" alt="boba" ></a>
+      </div>
+      
      
 
-      <div class="column is-one-third">
+      <div class="column">
         <a href="[[=URL('quiz')]]">
-         <img class="is-pulled-right" src="images/findyourid.jpg " width="300" height="300" alt="ucsc banner" ></a>
+         <img class="is-pulled-right" src="images/hawiianpoke.jpg " width="300" height="300" alt="boba" ></a>
       </div>
     </div>
 
@@ -112,12 +120,12 @@
     <div class="columns">
 
       <div class="column">
-        <img class="is-pulled-right" src="images/location.jpg " width="400" height="350" alt="ucsc banner">
+        <img class="is-pulled-right" src="images/location.jpg " width="400" height="350" alt="boba">
       </div>
 
       <div class="column">
         
-        <img class="is-pulled-right" src="images/poke1.jpg" width="400" height="400" alt="ucsc banner">
+        <img class="is-pulled-right" src="images/poke1.jpg" width="400" height="400" alt="boba">
       </div>
 
       <div class="column">
@@ -158,5 +166,5 @@
 
  
 </script>
-<script src="js/index.js"></script>
+
 [[end]]
