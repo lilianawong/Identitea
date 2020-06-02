@@ -53,6 +53,20 @@ def index():
     return dict(
      )
 
+@action('menu')
+@action.uses('menu.html', *common_fixtures)
+def index():
+       
+    return dict( get_category= URL("get_menu_drinks"))
+
+@action('quiz')
+@action.uses('quiz.html', *common_fixtures)
+def index():
+    
+    return dict(
+     )
+
+
 @action('admin')
 @action.uses('admin_panel.html', *common_fixtures)
 def admin_panel():
@@ -181,3 +195,73 @@ def admin_save_slides():
 def admin_slides():
     data = db(db.slides).select(orderby=db.slides.slide_number).as_list()
     return dict(slides=data)
+
+@action('get_menu_drinks')
+@action.uses(*common_fixtures)
+def get_menu_drinks():
+    
+
+    return dict(category=[
+        {
+        "category":"milktea",
+        "image":"images/milktea.png",
+        "drinks":[
+            {"name":"Jasmine Milk Tea",
+            "images":"images/jasminemilk.jpg",
+            "description":"Fresh Green Tea"},
+            
+            {"name":"Jasmine Milk Tea",
+            "images":"images/jasminemilk.jpg",
+            "description":"Fresh Green Tea"}] 
+        },
+        {
+        "category":"creamseries",
+        "image":"images/creamseries.png",
+        "drinks":[
+            {"name":"Jasmine Milk Tea (with cream)",
+            "images":"images/greencream.jpg",
+            "description":"Fresh Green Tea with cream"},
+            
+            {"name":"Black Milk Tea (with cream)",
+            "images":"images/blackcream.jpg",
+            "description":"Fresh Black Tea with cream"},
+            {"name":"Matcha Tea (with cream)",
+            "images":"images/matchalatte.jpg",
+            "description":"Match green tea hand frothed"}]
+            
+        },
+        {
+        "category":"Signiture drinks",
+        "image":"images/signature.png",
+        "drinks":[
+            {"name":"Strawberry Mint Refreshes",
+            "images":"images/strawgreentea.jpg",
+            "description":"Refreshing green tea "},
+            
+            {"name":"Mango Milk Bar",
+            "images":"images/mangomilk.jpg",
+            "description":"Sweet mango with milk"},
+            {"name":"Mango match",
+            "images":"images/matchalatte.jpg",
+            "description":"Match green tea hand frothed sweetened with mango"},
+            {"name":"Dulce De Leche",
+            "images":"images/dulcedeleche.jpg",
+            "description":"sweet caramel drink "},
+             {"name":"Strawberry Milk Bar",
+            "images":"images/strawmilk.jpg",
+            "description":"sweet strawberry milk boba"},
+            {"name":"Jasmine Milk Tea (with cream)",
+            "images":"images/greencream.jpg",
+            "description":"Fresh Green Tea with cream"},
+            
+            {"name":"Black Milk Tea (with cream)",
+            "images":"images/blackcream.jpg",
+            "description":"Fresh Black Tea with cream"},
+            {"name":"Matcha Tea (with cream)",
+            "images":"images/matchalatte.jpg",
+            "description":"Match green tea hand frothed"}
+
+            ]
+            
+        }
+        ])
