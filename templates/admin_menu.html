@@ -9,42 +9,177 @@
         <div class="container">
             <h1 class="title is-1">Edit Menu Items</h1>
 
-            <div class="columns is-centered is-vcentered is-mobile">
-                <div class="column is-narrow has-text-centered" style="max-width:1176px;">
-                    <div v-for="c in categories">
-                        <div>
-                            <img :src="c.image">
+            <div v-for="c in categories">
+                <div class="container has-text-centered">
+                    <div v-if="c.isEditing == false" class="level">
+                        <div class="level-item has-text-centered">
+                            <img class="" :src="c.content.image">
                         </div>
-                        <div v-for="d in c.drinks">
-                            <div v-if="d.isEditing == false">
-                                <img :src="d.image">
-                                <h3>{{ d.name }}</h3>
-                            </div>
-                            <div v-else>
+                        <div class="level-right">
+                            <div class="level-item">
+                                <div @click="edit_item(c.cat_idx)" class="button">
+                                    <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                                </div>
                             </div>
                         </div>
-
+                    </div>
+                    <div class="level" v-else>
+                        <div class="level-item has-text-centered">
+                            <div>
+                                <img :src="c.content.image"><br>
+                                [[=category_uploader]]
+                            </div>
+                        </div>
+                        <div class="level-right">
+                            <div class="level-item">
+                                <div class="button" @click="save_item(c.cat_idx)">
+                                    <i class="fa fa-check-square-o" aria-hidden="true"></i>
+                                </div>
+                                <div class="level-item">
+                                    <div @click="delete_item(c.cat_idx)" class="button">
+                                        <i class="fa fa-trash" aria-hidden="true"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
+                <div class="columns is-mobile">
+
+                    <div v-for="d in c.drinks" class="column is-one-fifth">
+                        <div v-if="d.isEditing == false" @click="show_drink_modal(c.cat_idx, d.drink_idx, true)"
+                            class="card" style="text-align: center; padding: 10px;">
+                            <!--<img :src="d.content.image">-->
+                            <figure class="is-128x128 has-text-centered" class="image is-128x128">
+                                <img style="width:128px; height:128px"
+                                    :src="d.content.image ? d.content.image : temp_sq_img"></img>
+                            </figure>
+                            <h3>{{ d.content.name }}</h3>
+                            <div v-on:click.stop @click="edit_item(c.cat_idx, d.drink_idx)" class="button">
+                                <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                            </div>
+                        </div>
+                        <div v-else class="card" style="width: 200px;height: 319px;overflow: hidden;padding: 10px;">
+                            <figure class="is-128x128 has-text-centered" class="image is-128x128">
+                                <img style="width:128px; height:128px"
+                                    :src="d.content.image ? d.content.image : temp_sq_img"></img>
+                            </figure>
+                            [[=drink_uploader]]
+                            <label>title: <input v-model="d.content.name" style="width:100%;"></input></label>
+                            <label>description: <input v-model="d.content.description"
+                                    style="width:100%;"></input></label>
+
+                            <div class="level" style="margin-top:10px">
+                                <div class="level-left">
+                                    <div class="level-item">
+                                        <div class="button" @click="cancel_edit(c.cat_idx, d.drink_idx)">
+                                            <i class="fa fa-chevron-circle-left" aria-hidden="true"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="level-right">
+                                    <div class="level-item">
+                                        <div class="button" @click="save_item( c.cat_idx, d.drink_idx)">
+                                            <i class="fa fa-check-square-o" aria-hidden="true"></i>
+                                        </div>
+                                    </div>
+                                    <div class="level-item">
+                                        <div class="button" @click="delete_item(c.cat_idx, d.drink_idx)">
+                                            <i class="fa fa-trash" aria-hidden="true"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div v-bind:class="{'is-active': d.show_modal, modal:true}">
+                            <div @click="show_drink_modal(c.cat_idx, d.drink_idx, false)" class="modal-background">
+                            </div>
+                            <div class="modal-content">
+                                <div class="box">
+                                    <div class="content has-text-centered">
+                                        <p class="control ">
+                                        <div class="columns">
+                                            <div class="column is-half">
+                                                <img :src="d.content.image" width="200" height="200" alt="boba"></img>
+                                                <div>
+                                                    <b> {{d.content.name}} </b>
+                                                </div>
+
+                                            </div>
+
+                                            <div class="column is-half">
+                                                <p style="font-family:courier,arial,helvetica;">
+                                                    {{d.content.description}}</p>
+                                                <div> Price: {{d.content.price}} </div>
+                                            </div>
+                                            
+
+                                        </div>
+                                        </p>
+                                        <span>&nbsp;</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <button @click="show_drink_modal(c.cat_idx, d.drink_idx, false)"
+                                class="modal-close"></button>
+
+                        </div>
+
+
+                    </div>
+                    <div class="column is-one-fifth">
+                        <div @click="add_item(c.cat_idx)" class="button" style="width:200px; height:250px">
+                            <i class="fa fa-plus-circle" aria-hidden="true"></i>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div @click="add_item()" class="button" style="width:100%">
+                <i class="fa fa-plus-circle" aria-hidden="true"></i>
             </div>
 
 
 
+    </section>
+    <section>
+        <div class="container">
+            <h2 class="title is-2">Edit Drink Toppings</h2>
+            <div>
+                <ul>
+                    <li v-for="t in toppings">
+                        <div>{{t.name}}</div>
+                        <div>{{t.description}}</div>
+                        <i @click="edit_topping(t.topping_idx)" class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                        <!--add image in the future -->
+                    </li>
+                    <li>
+                        <div>New Topping</div>
+                        <div @click="add_topping()" class="button"> + Add Item</div>
+                    </li>
+                </ul>
+            </div>
 
         </div>
-
-
-
     </section>
 </div>
 
 [[block page_scripts]]
 <!-- Loads the index-specific js for Vue -->
 <script>
-    let get_slides_url = "[[=XML(get_slides)]]";
-    let delete_slide_url = "[[=XML(delete_slide)]]";
-    let post_slides_url = "[[=XML(save_slides)]]";
+    let get_menu_url = "[[=XML(get_menu_items)]]";
+
+    let delete_category_url = "[[=XML(delete_category)]]";
+    let delete_drink_url = "[[=XML(delete_drink)]]";
+    let delete_topping_url = "[[=XML(delete_topping)]]";
+
+    let save_category_url = "[[=XML(save_category)]]";
+    let save_drink_url = "[[=XML(save_drink)]]";
+    let save_topping_url = "[[=XML(save_topping)]]";
+
+
 </script>
-<script src="js/index.js"></script>
+<script src="js/admin_menu.js"></script>
 <script src="[[=URL('static/components/fileupload/fileupload.js')]]"></script>
 [[end]]

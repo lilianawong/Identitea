@@ -21,6 +21,40 @@ def get_user_email():
 def get_time():
     return datetime.datetime.utcnow()
 
+
+db.define_table("menu_categories",
+                Field("name", "text"),
+                Field("image","text"))
+
+db.define_table("drinks",
+                Field('name', 'text'),
+                Field('description', 'text'),
+                Field('image', 'text'),
+                Field('categoryId', 'integer'), #menu category
+                Field('price', 'integer')
+                )
+
+db.define_table("drink_toppings",
+                Field('name', 'text'),
+                Field('description', 'text'),
+                Field('image', 'text')
+                )
+
+
+db.define_table("slides",
+                Field('type', 'text'),
+                Field('layout', 'text'),
+                Field('time', 'integer'), #ms
+                Field('slide_number', 'integer'),
+                Field('visible', 'boolean'), 
+                Field('deleted', 'boolean'),
+                Field('title', 'text'),
+                Field('description', 'text'),
+                Field('price', 'text'),
+                Field('image', 'text') #network only?, upload to static/assets
+                )
+
+
 db.define_table("questions",
                 Field('prompt', 'text'),
                 )
@@ -35,16 +69,6 @@ db.define_table("answer_implications",
                 Field('qaid', 'integer'), #question answer id
                 Field('tag_id', 'integer'),
                 Field('consumable_id', 'integer')
-                )
-
-db.define_table("drink_categories",
-                Field("name", "text"),
-                Field("image","text"))
-
-db.define_table("drinks",
-                Field('name', 'text'),
-                Field('description', 'text'),
-                Field('image', 'text')
                 )
 
 db.define_table("drink_attr", 
@@ -67,19 +91,6 @@ db.define_table("tags",
                 Field('name', 'text'),
                 Field('description', 'text'),
                 Field('image', 'text')
-                )
-
-db.define_table("slides",
-                Field('type', 'text'),
-                Field('layout', 'text'),
-                Field('time', 'integer'), #ms
-                Field('slide_number', 'integer'),
-                Field('visible', 'boolean'), 
-                Field('deleted', 'boolean'),
-                Field('title', 'text'),
-                Field('description', 'text'),
-                Field('price', 'text'),
-                Field('image', 'text') #network only?, upload to static/assets
                 )
 
 

@@ -49,8 +49,7 @@ admin_fixtures = common_fixtures + [admin_check, auth.user]
 # The auth.user below forces login.
 @action('index')
 @action.uses('index.html', *common_fixtures)
-def index():
-    
+def index():    
     return dict(
      )
 
@@ -59,15 +58,108 @@ def index():
 def admin_panel():
     return dict()
 
+
 file_uploader = FileUpload('up', session)
+@action('admin_menu', method=['GET'])
+@action.uses('admin_menu.html', *common_fixtures, file_uploader)
+def admin_menu():
+    return dict(
+        get_menu_items=URL("get_menu_items", signer=url_signer),
+        delete_category = URL("admin_delete_category", signer=url_signer),
+        delete_drink = URL("admin_delete_drink", signer=url_signer),
+        delete_topping = URL("admin_delete_topping", signer=url_signer),
+        save_category = URL("admin_save_category", signer=url_signer),
+        save_drink = URL("admin_save_drink", signer=url_signer),
+        save_topping = URL("admin_save_topping", signer=url_signer),
+        drink_uploader=file_uploader(bindCb="drink_image_uploaded", emitid="d.o"),
+        category_uploader = file_uploader(bindCb="category_image_uploaded", emitid="c.cat_idx")
+    )
+
+@action('get_menu_items', method=['GET'])
+@action.uses(*common_fixtures)
+def get_menu_items():
+    #need to get all the categories, then all drinks belonging to each category
+    cats = db(db.menu_categories).select()
+    cats = cats.as_list()
+    for c in cats:
+        drinks = db(db.drinks.categoryId == c.get('id')).select(orderby=db.drinks.name)
+        c['drinks'] = drinks.as_list()
+        pass
+    toppings = db(db.drink_toppings).select().as_list()
+    
+    return dict(categories=cats, toppings=toppings)
+
+@action('admin_save_category', method=['POST'])
+@action.uses(*common_fixtures)
+def admin_save_category():
+   
+   #need way to save many in the event of a reorder
+   
+    category = request.json
+    if category.get('id') != None:
+        db.menu_categories[category.get('id')] = category
+    else:
+        id = db.menu_categories.insert(
+            name=category.get('name'),
+            image=category.get('image')
+            )
+        return dict(id=id)
+    
+    
+@action('admin_save_drink', method=['POST'])
+@action.uses(*common_fixtures)
+def admin_save_drink():
+    
+    #need way to save many in the even of a reorder
+    
+    drink = request.json
+    if drink.get('id') != None:
+        db.drinks[drink.get('id')] = drink
+    else:
+        id = db.drinks.insert(
+            name=drink.get('name'),
+            description=drink.get('description'),
+            image=drink.get('image'),
+            categoryId=drink.get('categoryId'),
+            price=drink.get('price')
+        )
+        return dict( id=id)
+
+@action('admin_delete_drink', method=['POST'])
+@action.uses(*common_fixtures)
+def admin_delete_drink():
+    db(db.drinks.id == request.json.get('id')).delete()
+    pass
+
+@action('admin_delete_category', method=['POST'])
+@action.uses(*common_fixtures)
+def admin_delete_category():
+    #remove all associated drinks as well
+    c_id = request.json.get('id')
+    db(db.menu_categories.id == c_id).delete()
+    db(db.drinks.categoryId == c_id).delete()
+    pass
+
+@action('admin_save_topping', method=['POST'])
+@action.uses(*common_fixtures)
+def admin_save_topping():
+    topping = request.json.get('topping')
+    if topping.get('id') != None:
+        db.drink_toppings[topping.get('id')] = topping
+    else:
+        db.drink_toppings.insert(topping)
+
+
+
 @action('admin_slides', method=['GET'])
 @action.uses('admin_slides.html', *common_fixtures, file_uploader)
 def admin_slides():
+    
     return dict(
         get_slides=URL("admin_getslides", signer=url_signer),
         delete_slide = URL("admin_delete_slide", signer=url_signer),
         save_slides = URL("admin_save_slides", signer=url_signer),
-        uploader=file_uploader(id=1, emitid="slide.slide_idx")
+        uploader=file_uploader(emitid="slide.slide_idx")
     )
 
 
@@ -84,7 +176,7 @@ def admin_save_slides():
     #db.slides.bulk_update(update_slides)
     return
 
-@action('admin_getslides')
+@action('admin_getslides', method=['GET'])
 @action.uses(*common_fixtures)
 def admin_slides():
     data = db(db.slides).select(orderby=db.slides.slide_number).as_list()

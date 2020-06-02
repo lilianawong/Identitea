@@ -15,6 +15,8 @@ let init = (app) => {
     // This is the Vue data.
     app.data = {
         categories: [],
+        toppings: [],
+        temp_sq_img: "https://bulma.io/images/placeholders/128x128.png"
     };
 
 
@@ -27,7 +29,7 @@ let init = (app) => {
     app.isEditing = function () {
         return app.data.categories.some(function (c) {
             return c.isEditing || c.drinks.some(function (d) {
-                return d.isEditing();
+                return d.isEditing;
             });
         });
     }
@@ -56,17 +58,30 @@ let init = (app) => {
         if (cat_idx != null) {
             let category = app.data.categories[cat_idx];
             drink = {
-                name: "",
-                description: "",
-                image: ""
+                content: {
+                    name: "",
+                    description: "",
+                    image: "",
+                    categoryId: category.content.id,
+                    price: 0
+                },
+                original_content: {},
+                isEditing: true,
+                show_modal: false,
             };
             category.drinks.push(drink);
             app.reindex_drinks(cat_idx);
         } else {
             if (app.isEditing()) return;
             category = {
-                image: "",
-                name: ""
+                content: {
+                    image: "",
+                    name: "",
+
+                },
+                original_content: {},
+                drinks: [],
+                isEditing: true
             };
             app.data.categories.push(category);
             app.reindex();
@@ -81,36 +96,43 @@ let init = (app) => {
         let i = 0;
         for (d of drinks) {
             d.drink_idx = i++;
+            d.o = { drink_idx: d.drink_idx, cat_idx: category_idx }
         }
     }
 
-    app.index_drinks = function (category_idx) {
+    app.index_drinks = function (category_idx, drinks) {
         let category = app.data.categories[category_idx];
-        let drinks = category.drinks;
+        //let drinks = category.drinks;
         let i = 0;
-        for (d of drinks) {
-            d.content = deepCopy(d)
-            d.original_content = deepCopy(d)
-            d = _.pick(d, ['original_content', 'content'])
-            d.drink_idx = i++;
+        for (let i = 0; i < drinks.length; i++) {
+            drinks[i].content = deepCopy(drinks[i])
+            drinks[i].original_content = deepCopy(drinks[i].content)
+            drinks[i] = _.pick(drinks[i], ['original_content', 'content'])
+            drinks[i].drink_idx = i;
+            drinks[i].o = { drink_idx: drinks[i].drink_idx, cat_idx: category_idx }
+            drinks[i].isEditing = false;
+            drinks[i].show_modal = false;
         }
+        return drinks
     }
 
 
     app.index = (a) => {
         // Adds to the posts all the fields on which the UI relies.
-        let i = 0;
 
-        for (let c of a) {
-            c.content = deepCopy(c);
-            c.original_content = deepCopy(c);
-            c = _.pick(c, ['original_content', 'content'])
-            c.slide_idx = i++;
-            app.index_drinks(c.slide_idx);
+        for (let i = 0; i < a.length; i++) {
+
+            a[i].content = deepCopy(a[i]);
+            a[i].original_content = deepCopy(a[i].content);
+            a[i] = _.pick(a[i], ['original_content', 'content', 'drinks'])
+            a[i].cat_idx = i;
+            a[i].drinks = app.index_drinks(a[i].cat_idx, a[i].drinks);
+            a[i].isEditing = false;
         }
 
 
 
+        /*
         for (let p of a) {
             //transform all slide data into content and original content, so we 
             //can check if modifications have been made
@@ -121,28 +143,57 @@ let init = (app) => {
 
             //add id after transform so that it doesn't exist in content
             p.slide_idx = i++;
-        }
+        }*/
         return a;
     };
 
+    app.index_toppings = function (toppings) {
+        app.data.toppings = toppings;
+        for (t of toppings) {
+
+        }
+    }
+
     app.reindex = () => {
         // Adds to the posts all the fields on which the UI relies.
+
+        let i = 0;
+        for (let c of app.data.categories) {
+            c.cat_idx = i++;
+            app.reindex_drinks(c.cat_idx);
+        }
+
+        /*
         let i = 0;
         for (let p of app.data.slides) {
             p.slide_idx = i++;
             p.content.slide_number = p.slide_idx;
-        }
+        }*/
     };
 
     app.save_item = function (cat_idx, drink_idx) {
         let category = app.data.categories[cat_idx];
         if (drink_idx != null) {
             let drink = category.drinks[drink_idx];
-            axios.post(save_drink_url, drink).then(function () {
+
+            if (_.isEqual(drink.content, drink.original_content)) {
+                drink.isEditing = false;
+                return;
+            }
+
+            axios.post(save_drink_url, drink.content).then(function (res) {
+                drink.content.id = res.data.id;
+                drink.original_content = deepCopy(drink.content);
                 drink.isEditing = false;
             }).catch(function () { });
         } else {
-            axios.post(save_category_url, category).then(function () {
+            if (_.isEqual(category.content, category.original_content)) {
+                category.isEditing = false;
+                return;
+            }
+            axios.post(save_category_url, category.content).then(function (res) {
+                category.content.id = res.data.id;
+                category.original_content = deepCopy(category.content);
                 category.isEditing = false;
             }).catch(function () { })
         }
@@ -156,21 +207,61 @@ let init = (app) => {
             drink.content = deepCopy(drink.original_content);
             if (drink.content.id != null) {
                 drink.isEditing = false;
-            } else { 
+            } else {
                 //remove the new drink from the list!
                 category.drinks.pop()
             }
         } else {
             category.content = deepCopy(category.original_content);
-            
-            if(category.content.id != null){
+
+            if (category.content.id != null) {
                 category.isEditing = false;
-            }else{
+            } else {
                 category.pop();
             }
-            
-            
+
+
         }
+    }
+
+    app.show_drink_modal = function (cat_idx, drink_idx, show) {
+        app.data.categories[cat_idx].drinks[drink_idx].show_modal = show;
+    }
+
+
+
+    app.delete_item = function (cat_idx, drink_idx) {
+        let category = app.data.categories[cat_idx];
+        if (drink_idx != null) {
+            drink = category.drinks[drink_idx];
+            if (drink.content.id != null) {
+                axios.post(delete_drink_url, drink.content).then(function (res) {
+                    category.drinks.splice(drink_idx, 1)
+                    app.reindex_drinks(cat_idx);
+                }).catch(function () {
+
+                });
+            } else {
+                category.drinks.splice(drink_idx, 1);
+                app.reindex_drinks(cat_idx);
+            }
+        } else {
+            if (category.content.id != null) {
+                axios.post(delete_category_url, category.content).then(function (res) {
+                    app.data.categories.splice(cat_idx, 1);
+                    app.reindex();
+                }).catch(function () {
+
+                });
+            } else {
+                app.data.categories.splice(cat_idx, 1);
+                app.reindex();
+            }
+
+
+        }
+
+
     }
 
     app.do_delete = (slide_idx) => {
@@ -197,30 +288,29 @@ let init = (app) => {
         slide.content.image = filename;
     }
 
+    app.drink_image_uploaded = function (o, path) {
+        let cat = app.data.categories[o.cat_idx];
+        drink = cat.drinks[o.drink_idx];
+        drink.content.image = path
+    }
+
+    app.category_image_uploaded = function (cat_idx, path) {
+        let cat = app.data.categories[cat_idx];
+        cat.content.image = path;
+    }
+
     // We form the dictionary of all methods, so we can assign them
     // to the Vue app in a single blow.
     app.methods = {
-        do_edit: app.do_edit,
-        do_cancel: app.do_cancel,
-        do_save: app.do_save,
-        add_post: app.add_post,
-        reply: app.reply,
-        do_delete: app.do_delete,
-
-        add_slide: app.add_slide,
-        isModified: app.isModified,
-        save_all_slides: app.save_all_slides,
-        set_slide_visible: app.set_slide_visible,
-        set_slide_deleted: app.set_slide_deleted,
-
-        preview_next: app.preview_next,
-        preview_previous: app.preview_previous,
-        preview_goto: app.preview_goto,
-        preview_hold_slide_toggle: app.preview_hold_slide_toggle,
-
-        uploadedimage: app.uploadedimage,
-
-        //isEditing: app.isEditing
+        drink_image_uploaded: app.drink_image_uploaded,
+        category_image_uploaded: app.category_image_uploaded,
+        add_item: app.add_item,
+        edit_item: app.edit_item,
+        save_item: app.save_item,
+        delete_item: app.delete_item,
+        cancel_edit: app.cancel_edit,
+        show_drink_modal: app.show_drink_modal,
+        isEditing: app.isEditing
     };
 
     app.computed = {
@@ -239,10 +329,11 @@ let init = (app) => {
     app.init = () => {
 
         //start carousel timer
-        app.preview_goto(0);
+        //app.preview_goto(0);
 
-        axios.get(get_slides_url).then(function (res) {
-            app.vue.slides = app.index(res.data.slides);
+        axios.get(get_menu_url).then(function (res) {
+            app.vue.categories = app.index(res.data.categories);
+            app.vue.toppings = app.index_toppings(res.data.toppings);
         });
     };
 

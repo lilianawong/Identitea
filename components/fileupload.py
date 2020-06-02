@@ -6,7 +6,7 @@ import uuid
 
 class FileUpload(Fixture):
 
-    FILE_UPLOAD = '<fileupload @uploaded="uploadedimage" v-bind:emitid="{emitid}"  url="{url}"></fileupload>'
+    FILE_UPLOAD = '<fileupload @uploaded="{bindCb}" v-bind:emitid="{emitid}"  url="{url}"></fileupload>'
 
     def __init__(self, url, session, signer=None, db=None, auth=None, dumpDir="dump"):
         self.dumpDir = dumpDir
@@ -20,11 +20,11 @@ class FileUpload(Fixture):
         f = action.uses(*args)(self.api)
         action(self.url + "/<id>", method=["POST"])(f)
 
-    def __call__(self, id=None, emitid=None):
+    def __call__(self, bindCb="uploadedimage" , emitid=None):
         """This method returns the element that can be included in the page.
         @param id: id of the file uploaded.  This can be useful if there are
         multiple instances of this form on the page."""
-        return XML(FileUpload.FILE_UPLOAD.format(url=URL(self.url, id, signer=self.signer), emitid=emitid))
+        return XML(FileUpload.FILE_UPLOAD.format(url=URL(self.url, 1, signer=self.signer), bindCb=bindCb, emitid=emitid))
 
     def api(self, id=None):
         """This API receives the file upload and does something with it.
