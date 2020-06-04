@@ -14,38 +14,37 @@
                     <button @click="add_slide" class="button">+ Slide</button>
                     <br><br>
 
-                    <div v-for="slide in slides" class="slide box" @click=preview_goto(slide.slide_idx)>
+                    <div v-for="slide in slides" class="slide box" @click=preview_goto(slide.slide_idx)
+                        v-if="!slide.content.deleted">
+
                         <div class="level">
                             <div class="level-left">
-                                <div class="level-item">
+                                <div class="level-item nicemenumargin">
                                     <button class="button">Product</button>
                                     <!--Add in functionality once other stuff is done-->
-                                </div>
-                                <div class="level-item">
+
                                     <button class="button">Left Portrait</button>
                                 </div>
                             </div>
                             <div class="level-right">
-                                <div class="level-item">
+                                <div class="level-item nicemenumargin">
                                     <label>time <input v-model="slide.content.time" type="text" name="time" size="1"
                                             maxlength="5"></label>
-                                </div>
-                                <div class="level-item">
+
                                     <label>#<input v-model="slide.content.slide_number" type="text" name="slide_number"
                                             size="1" maxlength="3" placeholder="n"></label>
-                                </div>
-                                <div class="level-item">
+
                                     <i v-if="slide.content.visible" class="fa fa-eye"
                                         @click="set_slide_visible(slide.slide_idx, false)" aria-hidden="true"></i>
                                     <i v-if="!slide.content.visible" class="fa fa-eye-slash"
                                         @click="set_slide_visible(slide.slide_idx, true)" aria-hidden="true"></i>
-                                </div>
-                                <div class="level-item">
+
                                     <i @click="set_slide_deleted(slide.slide_idx, true)" class="fa fa-trash"
                                         aria-hidden="true"></i>
                                 </div>
                             </div>
                         </div>
+
                         <hr>
 
                         <div class="columns is-vcentered">
@@ -65,6 +64,7 @@
                                 <label>Price:<input v-model="slide.content.price" class="input" type="text"></label>
                             </div>
                         </div>
+
                     </div>
 
                 </div>
@@ -72,44 +72,51 @@
             <div class="column">
                 <div class="box">
                     <h4 class="title is-4">Global Variables</h4>
-                    <label>Time Per Slide <input class="input" type="text" size="2" value="--"
+                    <label>Time Per Slide <input class="input" @input="masterTime" type="text" size="2" value="--"
                             v-model="global_time_per_slide"></label>
 
                     <br><br>
-                    <button class="button" @click="delete_all_slides()">Delete All</button>
-                    <button class="button" @click="save_all_slides" :disabled="!isModified()">Save Changes</button>
+
+                    <button class="button"
+                        v-bind:class="{'has-background-info': isModified(), 'has-text-white':isModified()}"
+                        @click="save_all_slides" :disabled="!isModified()">Save Changes</button>
+                    <span class="has-text-danger" v-if="savefailed">Error: save failed. Please Try again. </span>
+
+                    <button class="button has-background-danger has-text-white is-pulled-right"
+                        @click="delete_all_slides()">Delete All</button>
                 </div>
 
-                <div class="box"  style="position: sticky; top: 10px;">
+                <div class="box" style="position: sticky; top: 10px;">
                     <h5 class="title is-5">Carousel Preview</h5>
-                    <div class="box">
-                        <!-- preview slide, uses app.data.preview_content.*-->
-                        <div v-for="slide in slides">
-                            <div v-if="slide.content.slide_number == preview_slide_number" class="slide box">
-                                <div class="columns is-vcentered">
-                                    <div class="column is-two-fifths">
-                                        <figure class="image is-1by1" width="128">
-                                            <img :src="slide.content.image">
-                                        </figure>
-                                    </div>
-                                    <div class="column">
-                                        <div>
-                                            <h3 class="title is-3">{{ slide.content.title }}</h3>
-                                        </div>
-                                        <div>{{ slide.content.description }}</div>
-                                        <div>{{ slide.content.price }}</div>
-                                    </div>
+
+                    <!-- preview slide, uses app.data.preview_content.*-->
+
+                    <div v-for="slide in slides" v-if="slide.content.slide_number == preview_slide_number"
+                        class="slide box has-background-black">
+                        <div class="columns is-vcentered">
+                            <div class="column is-two-fifths">
+
+                                <img class="niceimage" :src="slide.content.image" style="height:300px; width:auto;">
+
+                            </div>
+                            <div class="column has-text-white">
+                                <div>
+                                    <h3 class="title is-3 title is-3 has-text-success">{{ slide.content.title }}</h3>
                                 </div>
+                                <div class="nicedisplaytest">{{ slide.content.description }}</div>
+                                <div>{{ slide.content.price }}</div>
                             </div>
                         </div>
                     </div>
+
 
                     <div class="box">
                         <h5 class="title is-5">Carousel Controls</h5>
                         <hr>
                         <div class="columns">
                             <div class="column">
-                                <label><input v-model="preview_hold_slide" @click="preview_hold_slide_toggle()" class="checkbox" type="checkbox"> Hold
+                                <label><input v-model="preview_hold_slide" @click="preview_hold_slide_toggle()"
+                                        class="checkbox" type="checkbox"> Hold
                                     Slide</label>
                                 <br><br>
                                 <label>Slide # <input v-model="preview_slide_number" class="input" type="text"

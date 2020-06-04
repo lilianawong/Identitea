@@ -59,15 +59,15 @@
                                 <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
                             </div>
                         </div>
-                        <div v-else class="card" style="width: 200px;height: 319px;overflow: hidden;padding: 10px;">
+                        <div v-else class="card" style="width: 200px;overflow: hidden;padding: 10px;">
                             <figure class="is-128x128 has-text-centered" class="image is-128x128">
                                 <img style="width:128px; height:128px"
                                     :src="d.content.image ? d.content.image : temp_sq_img"></img>
                             </figure>
                             [[=drink_uploader]]
                             <label>title: <input v-model="d.content.name" style="width:100%;"></input></label>
-                            <label>description: <input v-model="d.content.description"
-                                    style="width:100%;"></input></label>
+                            <label>description: <textarea rows="5" v-model="d.content.description"
+                                    style="width:100%; resize: vertical;"></textarea></label>
 
                             <div class="level" style="margin-top:10px">
                                 <div class="level-left">
@@ -109,7 +109,7 @@
                                             </div>
 
                                             <div class="column is-half">
-                                                <p style="font-family:courier,arial,helvetica;">
+                                                <p class="nicedisplaytest" style="font-family:courier,arial,helvetica;">
                                                     {{d.content.description}}</p>
                                                 <div> Price: {{d.content.price}} </div>
                                             </div>
@@ -136,6 +136,7 @@
                 </div>
 
             </div>
+            <br><br>
             <div @click="add_item()" class="button" style="width:100%">
                 <i class="fa fa-plus-circle" aria-hidden="true"></i>
             </div>

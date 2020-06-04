@@ -30,3 +30,11 @@
   border: 2px solid #23d160;
 }
 
+.nicemenumargin > * {
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.nicedisplaytest{
+  white-space: pre-wrap;
+}

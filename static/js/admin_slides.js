@@ -16,6 +16,8 @@ let init = (app) => {
     app.data = {
         slides: [], // See initialization.
 
+        savefailed: false,
+
         //globals
         global_time_per_slide: "--",
 
@@ -81,7 +83,7 @@ let init = (app) => {
 
     app.preview_previous = function () {
         slide_idx = app.data.preview_slide_number;
-        slide_idx = --slide_idx <= 0 ? app.data.slides.length - 1 : slide_idx;
+        slide_idx = --slide_idx < 0 ? app.data.slides.length - 1 : slide_idx;
         slide = app.data.slides[slide_idx];
         if (!slide) return;
         app.data.preview_slide_number = slide_idx;
@@ -162,18 +164,6 @@ let init = (app) => {
         slide.deleted = isDeleted;
     }
 
-    app.set_slide_text = function (slide_idx) {
-        //auto
-    }
-
-    app.set_slide_title = function (slide_idx) {
-        //auto
-    }
-
-    app.set_slide_price = function (slide_idx) {
-        //auto
-    }
-
     app.set_slide_image = function (slide_idx) {
         //harder! .. need to upload image from client
         //then set the url to the resulting position in the server
@@ -191,13 +181,22 @@ let init = (app) => {
         axios.post(post_slides_url, {
             slides: slides
         }).then(function (res) {
-            app.data.slides.forEach(function (s) {
-                s.original_content = deepCopy(s.content)
-            });
+            app.vue.slides = app.index(res.data.slides);
+            app.data.savefailed = false;
+            //app.data.slides.forEach(function (s) {
+            //    s.original_content = deepCopy(s.content)
+            //});
         }).catch(function () {
+            app.data.savefailed = true;
 
         });
 
+    }
+
+    app.masterTime = function({type, target}){
+        for(s of app.data.slides){
+            s.content.time = target.value;
+        }
     }
 
 
@@ -275,77 +274,7 @@ let init = (app) => {
             p.original_content = p.content;
         }
     }
-
-    app.add_post = () => {
-        // TODO: this is the new post we are inserting.
-        // You need to initialize it properly, completing below, and ...
-
-        //if (app.isEditing()) return;
-
-        let q = {
-            id: null,
-            edit: true,
-            editable: true,
-            content: "",
-            server_content: null,
-            original_content: "",
-            author: author_name,
-            email: user_email,
-            is_reply: null,
-            children: 0,
-            error: false
-        };
-        // TODO:
-        // ... you need to insert it at the top of the post list.
-        app.vue.posts.splice(0, 0, q);
-        app.reindex();
-    };
-
-    app.reply = (slide_idx) => {
-        //if (app.isEditing()) return;
-        let p = app.vue.posts[slide_idx];
-        if (p.id !== null) {
-            // TODO: this is the new reply.  You need to initialize it properly...
-            let q = {
-                id: null,
-                edit: true,
-                editable: true,
-                content: "",
-                server_content: null,
-                original_content: "",
-                author: author_name,
-                email: user_email,
-                is_reply: p.id,
-                error: false,
-            };
-
-            q.parent = p;
-            app.vue.posts.splice(slide_idx + 1, 0, q);
-            p.children++;
-            app.reindex();
-            // TODO: and you need to insert it in the right place, and reindex
-            // the posts.  Look at the code for app.add_post; it is similar.
-        }
-    };
-
-    app.do_delete = (slide_idx) => {
-        let p = app.vue.posts[slide_idx];
-        if (p.id === null) {
-            // TODO:
-            // If the post has never been added to the server, simply deletes it.
-            p.parent.children--;
-            app.vue.posts.splice(slide_idx, 1);
-            app.reindex();
-        } else {
-            axios.post(delete_url, { id: p.id }).then(function () {
-                p.parent.children--;
-                app.vue.posts.splice(slide_idx, 1);
-                app.reindex();
-            });
-            // TODO: Deletes it on the server.
-        }
-
-    };
+    
 
     app.uploadedimage = function(slide_idx, filename){
         slide = app.data.slides[slide_idx];
@@ -374,6 +303,7 @@ let init = (app) => {
         preview_hold_slide_toggle: app.preview_hold_slide_toggle,
 
         uploadedimage:app.uploadedimage,
+        masterTime:app.masterTime,
 
         //isEditing: app.isEditing
     };

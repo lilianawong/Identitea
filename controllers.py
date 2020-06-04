@@ -76,7 +76,7 @@ def admin_panel():
 
 file_uploader = FileUpload('up', session)
 @action('admin_menu', method=['GET'])
-@action.uses('admin_menu.html', *common_fixtures, file_uploader)
+@action.uses('admin_menu.html', *admin_fixtures, file_uploader)
 def admin_menu():
     return dict(
         get_menu_items=URL("get_menu_items", signer=url_signer),
@@ -105,7 +105,7 @@ def get_menu_items():
     return dict(categories=cats, toppings=toppings)
 
 @action('admin_save_category', method=['POST'])
-@action.uses(*common_fixtures)
+@action.uses(*admin_fixtures)
 def admin_save_category():
    
    #need way to save many in the event of a reorder
@@ -122,7 +122,7 @@ def admin_save_category():
     
     
 @action('admin_save_drink', method=['POST'])
-@action.uses(*common_fixtures)
+@action.uses(*admin_fixtures)
 def admin_save_drink():
     
     #need way to save many in the even of a reorder
@@ -141,7 +141,7 @@ def admin_save_drink():
         return dict( id=id)
 
 @action('admin_delete_drink', method=['POST'])
-@action.uses(*common_fixtures)
+@action.uses(*admin_fixtures)
 def admin_delete_drink():
     db(db.drinks.id == request.json.get('id')).delete()
     pass
@@ -156,7 +156,7 @@ def admin_delete_category():
     pass
 
 @action('admin_save_topping', method=['POST'])
-@action.uses(*common_fixtures)
+@action.uses(*admin_fixtures)
 def admin_save_topping():
     topping = request.json.get('topping')
     if topping.get('id') != None:
@@ -167,7 +167,7 @@ def admin_save_topping():
 
 
 @action('admin_slides', method=['GET'])
-@action.uses('admin_slides.html', *common_fixtures, file_uploader)
+@action.uses('admin_slides.html', *admin_fixtures, file_uploader)
 def admin_slides():
     
     return dict(
@@ -179,16 +179,19 @@ def admin_slides():
 
 
 @action('admin_save_slides', method=['POST'])
-@action.uses(*common_fixtures)
+@action.uses(*admin_fixtures)
 def admin_save_slides():
+    if random.random() < 0.5:
+        raise HTTP(500)
     insert_slides = [i for i in request.json.get('slides') if i.get('id') == None]
     update_slides =  [i for i in request.json.get('slides') if i.get('id') != None ] 
-    db.slides.bulk_insert(insert_slides)
+    a = db.slides.bulk_insert(insert_slides)
     
     for s in update_slides:
         db.slides[s.get('id')] = s
     
     #db.slides.bulk_update(update_slides)
+    redirect(URL('admin_getslides'))
     return
 
 @action('admin_getslides', method=['GET'])

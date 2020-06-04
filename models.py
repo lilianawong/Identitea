@@ -22,6 +22,11 @@ def get_time():
     return datetime.datetime.utcnow()
 
 
+db.define_table("admins",
+                Field("user_id","integer"),
+                Field("level", "integer", default=0)
+)
+
 db.define_table("menu_categories",
                 Field("name", "text"),
                 Field("image","text"))

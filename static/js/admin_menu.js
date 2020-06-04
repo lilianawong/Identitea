@@ -16,7 +16,7 @@ let init = (app) => {
     app.data = {
         categories: [],
         toppings: [],
-        temp_sq_img: "https://bulma.io/images/placeholders/128x128.png"
+        temp_sq_img: "images/128x128.png"
     };
 
 
