@@ -1,0 +1,128 @@
+timestamp: 2020-06-02T13:41:06.266206
+CREATE TABLE "py4web_session"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "rkey" CHAR(512),
+    "rvalue" TEXT,
+    "expiration" INTEGER,
+    "created_on" TIMESTAMP,
+    "expires_on" TIMESTAMP
+);
+success!
+timestamp: 2020-06-02T13:41:06.287164
+CREATE TABLE "auth_user"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "email" CHAR(512) UNIQUE,
+    "password" CHAR(512),
+    "first_name" CHAR(512),
+    "last_name" CHAR(512),
+    "sso_id" CHAR(512),
+    "action_token" CHAR(512),
+    "last_password_change" TIMESTAMP
+);
+success!
+timestamp: 2020-06-02T13:41:06.303155
+CREATE TABLE "auth_user_tag_groups"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "path" CHAR(512),
+    "record_id" INTEGER REFERENCES "auth_user" ("id") ON DELETE CASCADE  
+);
+success!
+timestamp: 2020-06-02T13:41:06.386491
+CREATE TABLE "menu_categories"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "name" TEXT,
+    "image" TEXT
+);
+success!
+timestamp: 2020-06-02T13:41:06.402603
+CREATE TABLE "drinks"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "name" TEXT,
+    "description" TEXT,
+    "image" TEXT,
+    "categoryId" INTEGER,
+    "price" INTEGER
+);
+success!
+timestamp: 2020-06-02T13:41:06.418318
+CREATE TABLE "drink_toppings"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "name" TEXT,
+    "description" TEXT,
+    "image" TEXT
+);
+success!
+timestamp: 2020-06-02T13:41:06.435204
+CREATE TABLE "slides"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "type" TEXT,
+    "layout" TEXT,
+    "time" INTEGER,
+    "slide_number" INTEGER,
+    "visible" CHAR(1),
+    "deleted" CHAR(1),
+    "title" TEXT,
+    "description" TEXT,
+    "price" TEXT,
+    "image" TEXT
+);
+success!
+timestamp: 2020-06-02T13:41:06.453294
+CREATE TABLE "questions"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "prompt" TEXT
+);
+success!
+timestamp: 2020-06-02T13:41:06.468210
+CREATE TABLE "answers"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "qid" INTEGER,
+    "text" TEXT,
+    "image" TEXT
+);
+success!
+timestamp: 2020-06-02T13:41:06.483879
+CREATE TABLE "answer_implications"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "qaid" INTEGER,
+    "tag_id" INTEGER,
+    "consumable_id" INTEGER
+);
+success!
+timestamp: 2020-06-02T13:41:06.501024
+CREATE TABLE "drink_attr"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "drink_id" INTEGER,
+    "consumable_id" INTEGER
+);
+success!
+timestamp: 2020-06-02T13:41:06.521115
+CREATE TABLE "consumable"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "name" TEXT,
+    "description" TEXT,
+    "image" TEXT
+);
+success!
+timestamp: 2020-06-02T13:41:06.538444
+CREATE TABLE "consumable_to_tag"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "consumable_id" INTEGER,
+    "tag_id" INTEGER
+);
+success!
+timestamp: 2020-06-02T13:41:06.557327
+CREATE TABLE "tags"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "name" TEXT,
+    "description" TEXT,
+    "image" TEXT
+);
+success!
+timestamp: 2020-06-02T13:41:06.617129
+CREATE TABLE "auth_user_tag_default"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "path" CHAR(512),
+    "record_id" INTEGER REFERENCES "auth_user" ("id") ON DELETE CASCADE  
+);
+success!
