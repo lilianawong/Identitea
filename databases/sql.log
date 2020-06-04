@@ -126,3 +126,10 @@ CREATE TABLE "auth_user_tag_default"(
     "record_id" INTEGER REFERENCES "auth_user" ("id") ON DELETE CASCADE  
 );
 success!
+timestamp: 2020-06-04T02:22:51.689797
+CREATE TABLE "admins"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "user_id" INTEGER,
+    "level" INTEGER
+);
+success!
