@@ -5,9 +5,9 @@
 [[end]]
 
 <div id="vue-target">
-    <section class="section">
+    <section class="section has-background-grey">
         <div class="container">
-            <h1 class="title is-1">Edit Menu Items</h1>
+            <h1 class="title is-1 has-text-white titleshadow">Edit Menu Items</h1>
 
             <div v-for="c in categories">
                 <div class="container has-text-centered">
@@ -17,7 +17,7 @@
                         </div>
                         <div class="level-right">
                             <div class="level-item">
-                                <div @click="edit_item(c.cat_idx)" class="button">
+                                <div @click="edit_item(c.cat_idx)" class="button has-background-white-ter backshadow">
                                     <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
                                 </div>
                             </div>
@@ -44,13 +44,13 @@
                         </div>
                     </div>
                 </div>
-                <div class="columns is-mobile">
+                <div class="columns is-multiline">
 
                     <div v-for="d in c.drinks" class="column is-one-fifth">
                         <div v-if="d.isEditing == false" @click="show_drink_modal(c.cat_idx, d.drink_idx, true)"
-                            class="card" style="text-align: center; padding: 10px;">
+                            class="box backshadow greycard" style="text-align: center; padding: 10px;">
                             <!--<img :src="d.content.image">-->
-                            <figure class="is-128x128 has-text-centered" class="image is-128x128">
+                            <figure class="is-128x128 has-text-centered " class="image is-128x128">
                                 <img 
                                     :src="d.content.image ? d.content.image : temp_sq_img"></img>
                             </figure>
@@ -59,8 +59,8 @@
                                 <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
                             </div>
                         </div>
-                        <div v-else class="card" style="width: 200px;overflow: hidden;padding: 10px;">
-                            <figure class="is-128x128 has-text-centered" class="image is-128x128">
+                        <div v-else class="box backshadow greycard" style="width: 200px;overflow: hidden;padding: 10px;">
+                            <figure class="is-128x128 has-text-centered " class="image is-128x128">
                                 <img style="width:128px; height:128px"
                                     :src="d.content.image ? d.content.image : temp_sq_img"></img>
                             </figure>
@@ -129,7 +129,7 @@
 
                     </div>
                     <div class="column is-one-fifth">
-                        <div @click="add_item(c.cat_idx)" class="button" style="width:200px; height:250px">
+                        <div @click="add_item(c.cat_idx)" class="button backshadow greycard " style="width:200px; height:250px">
                             <i class="fa fa-plus-circle" aria-hidden="true"></i>
                         </div>
                     </div>
@@ -137,16 +137,16 @@
 
             </div>
             <br><br>
-            <div @click="add_item()" class="button" style="width:100%">
+            <div @click="add_item()" class="button backshadow greycard" style="width:100%">
                 <i class="fa fa-plus-circle" aria-hidden="true"></i>
             </div>
 
 
 
     </section>
-    <section>
+    <section class="has-background-grey">
         <div class="container">
-            <h2 class="title is-2">Edit Drink Toppings</h2>
+            <h2 class="title is-2  has-text-white titleshadow">Edit Drink Toppings</h2>
             <div>
                 <ul>
                     <li v-for="t in toppings">
@@ -156,7 +156,9 @@
                         <!--add image in the future -->
                     </li>
                     <li>
-                        <div>New Topping</div>
+                        <div class="has-text-white">
+                            <h1> Topping</h1>
+                        </div>
                         <div @click="add_topping()" class="button"> + Add Item</div>
                     </li>
                 </ul>

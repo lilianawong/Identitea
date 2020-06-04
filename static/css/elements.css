@@ -55,3 +55,14 @@
 .nicedisplaytest{
   white-space: pre-wrap;
 }
+
+.greycard{
+  background-color: #f1f0f0;
+}
+
+.backshadow{
+  box-shadow: 7px 9px 10px rgb(58, 55, 55);
+}
+.titleshadow{
+  text-shadow: 2px 2px #000000
+}
