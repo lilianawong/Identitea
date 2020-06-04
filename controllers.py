@@ -44,7 +44,9 @@ groups = Tags(db.auth_user)
 admin_check = Admin_Check(auth, db, groups)
 
 common_fixtures = [db, session, url_signer]
-admin_fixtures = common_fixtures + [admin_check, auth.user]
+admin_fixtures = common_fixtures + [auth.user, admin_check]
+
+user = None
 
 # The auth.user below forces login.
 @action('index')
@@ -167,7 +169,7 @@ def admin_save_topping():
 
 
 @action('admin_slides', method=['GET'])
-@action.uses('admin_slides.html', *admin_fixtures, file_uploader)
+@action.uses(*admin_fixtures, file_uploader, 'admin_slides.html')
 def admin_slides():
     
     return dict(
