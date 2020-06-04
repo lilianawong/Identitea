@@ -28,5 +28,22 @@
 .niceimage{
   border-radius:10px;
   border: 2px solid #23d160;
+
+}
+.niceimagemenu{
+  border-radius:10px;
+  border: 2px solid #23d160;
+  transition: 0.2s ease-in;
+}
+
+
+.niceimagemenu:hover{
+  border-color: #580a1f;
+}
+.modalniceimage{
+  border-radius: 10px;
+  border: 2px solid #f3f1f1;
+  box-shadow: #717171 0px 0px 20px 0px;
+
 }
 

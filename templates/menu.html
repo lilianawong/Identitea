@@ -10,7 +10,7 @@
                         <div class="hero-body is-paddingless">
                             <div class="container">
 
-                                <h1 class="title has-text-success">Identitea Boba & Poke Menu
+                                <h1 class="title has-text-success">Identitea Boba Menu
                                 </h1>
                             </div>
                         </div>
@@ -34,7 +34,7 @@
                 <div class="columns is-text-right is-centered is-multiline">
                     <div v-for="d in c.drinks" class="column  has-text-centered is-one-fifth">
                         <div v-on:click="activatemodal(d.name,d.description,d.image)">
-                            <img :src="d.image" width="200" height="200" alt="boba"></img>
+                            <img class="niceimagemenu" :src="d.image" width="200" height="200" alt="boba"></img>
                             <div class="has-text-success">{{d.name}}</div>
                         </div>
 
@@ -50,7 +50,7 @@
                             <p class="control ">
                             <div class="columns">
                                 <div class="column is-half">
-                                    <img :src=modalimages width="200" height="200" alt="boba"></img>
+                                    <img class="modalniceimage" :src=modalimages width="200" height="200" alt="boba"></img>
                                     <div>
                                         <b> {{modalname}}</b>
                                     </div>
@@ -71,17 +71,34 @@
                 <button @click="close" class="modal-close"></button>
 
             </div>
+            
+            <div class="columns">
+                <div class="column is-two-thirds">
+                    <section class="hero">
+                        <div class="hero-body is-paddingless">
+                            <div class="container">
+
+                                <h1 class="title has-text-success">Identitea Poke Menu
+                                </h1>
+                            </div>
+                        </div>
+                    </section>
+                    <br />
+
+                </div>
 
 
+            </div>
 
-            <div class="columns is-text-right is-centered">
+
+            <div class="columns is-centered">
                 <div class="column has-text-centered is-4">
 
-                    <img src="images/pokemenu1.jpg " width="300" height="300" alt="poke menu">
+                    <img src="images/pokemenu1.jpg " width="500" height="500" alt="poke menu">
                 </div>
-                <div class="column">
+                <div class="column has-text-centered is-4">
 
-                    <img src="images/pokemenu2.jpg " width="300" height="300" alt="pokemenu">
+                    <img src="images/pokemenu2.jpg " width="500" height="500" alt="pokemenu">
                 </div>
 
 
