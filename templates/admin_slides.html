@@ -5,16 +5,16 @@
 [[end]]
 
 <div id="vue-target">
-    <section class="section">
-        <h1 class="title is-1">Edit Slides</h1>
+    <section class="section has-background-grey">
+        <h1 class="title is-1 has-text-white titleshadow">Edit Slides</h1>
 
         <div class="columns">
             <div class="column">
-                <div class="box">
+                <div class="box has-background-grey-dark backshadow">
                     <button @click="add_slide" class="button">+ Slide</button>
                     <br><br>
 
-                    <div v-for="slide in slides" class="slide box" @click=preview_goto(slide.slide_idx)
+                    <div v-for="slide in slides" class="slide box greycard" @click=preview_goto(slide.slide_idx)
                         v-if="!slide.content.deleted">
 
                         <div class="level">
@@ -70,7 +70,7 @@
                 </div>
             </div>
             <div class="column">
-                <div class="box">
+                <div class="box greycard backshadow">
                     <h4 class="title is-4">Global Variables</h4>
                     <label>Time Per Slide <input class="input" @input="masterTime" type="text" size="2" value="--"
                             v-model="global_time_per_slide"></label>
@@ -86,7 +86,7 @@
                         @click="delete_all_slides()">Delete All</button>
                 </div>
 
-                <div class="box" style="position: sticky; top: 10px;">
+                <div class="box greycard backshadow" style="position: sticky; top: 10px;">
                     <h5 class="title is-5">Carousel Preview</h5>
 
                     <!-- preview slide, uses app.data.preview_content.*-->
