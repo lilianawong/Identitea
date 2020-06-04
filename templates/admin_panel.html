@@ -1,0 +1,50 @@
+[[extend 'admin_layout.html']]
+
+[[block page_head]]
+<link rel="stylesheet" href="[[=URL('static/components/fileupload/fileupload.css')]]">
+[[end]]
+
+<div id="vue-target">
+    <section class="section has-background-grey">
+        <div class="container">
+            <h1 class="title is-1 has-text-white titleshadow">Welcome to the admin panel</h1>
+            <p>Here you are able to, modify the carousel, menu, and see statistics about site usage.</p>
+            <div class="columns is-vcentered" style="height:33.3vh;">
+                <div class="column">
+                    <a href="[[=URL('admin_slides')]]">
+                        <div class="box popshadow has-text-centered greycard backshadow" style="cursor: pointer;">
+                            Carousel
+                        </div>
+                    </a>
+                </div>
+                <div class="column">
+                    <a href="[[=URL('admin_menu')]]">
+                        <div class="box popshadow has-text-centered greycard backshadow" style="cursor: pointer;">
+                            Menu
+                        </div>
+                    </a>
+                </div>
+                <div class="column">
+                    <a href="#">
+                        <div class="box popshadow has-text-centered greycard backshadow" style="cursor: pointer;">
+                            Statistics
+                        </div>
+                    </a>
+                </div>
+
+
+            </div>
+        </div>
+    </section>
+</div>
+
+[[block page_scripts]]
+<!-- Loads the index-specific js for Vue -->
+<script>
+
+
+
+</script>
+<script src="js/admin_menu.js"></script>
+<script src="[[=URL('static/components/fileupload/fileupload.js')]]"></script>
+[[end]]

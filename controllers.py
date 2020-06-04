@@ -71,14 +71,14 @@ def index():
 
 
 @action('admin')
-@action.uses('admin_panel.html', *common_fixtures)
+@action.uses(*admin_fixtures, 'admin_panel.html')
 def admin_panel():
     return dict()
 
 
 file_uploader = FileUpload('up', session)
 @action('admin_menu', method=['GET'])
-@action.uses('admin_menu.html', *admin_fixtures, file_uploader)
+@action.uses(*admin_fixtures, file_uploader, 'admin_menu.html')
 def admin_menu():
     return dict(
         get_menu_items=URL("get_menu_items", signer=url_signer),
