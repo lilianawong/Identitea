@@ -16,6 +16,7 @@ let init = (app) => {
     app.data = {
         categories: [],
         toppings: [],
+        topping_error: false,
         temp_sq_img: "images/128x128.png"
     };
 
@@ -105,6 +106,7 @@ let init = (app) => {
         //let drinks = category.drinks;
         let i = 0;
         for (let i = 0; i < drinks.length; i++) {
+            drinks[i].price = app.dollars(drinks[i].price)
             drinks[i].content = deepCopy(drinks[i])
             drinks[i].original_content = deepCopy(drinks[i].content)
             drinks[i] = _.pick(drinks[i], ['original_content', 'content'])
@@ -121,7 +123,6 @@ let init = (app) => {
         // Adds to the posts all the fields on which the UI relies.
 
         for (let i = 0; i < a.length; i++) {
-
             a[i].content = deepCopy(a[i]);
             a[i].original_content = deepCopy(a[i].content);
             a[i] = _.pick(a[i], ['original_content', 'content', 'drinks'])
@@ -147,10 +148,30 @@ let init = (app) => {
         return a;
     };
 
-    app.index_toppings = function (toppings) {
-        app.data.toppings = toppings;
-        for (t of toppings) {
+    app.dollars = function (cents) {
+        cents = cents.toString();
+        cents = cents.length < 3 ? "0".repeat(3 - cents.length) + cents : cents;
+        cents = cents.slice(0, cents.length - 2) + "." + cents.slice(cents.length - 2, cents.length);
+        return cents;
+    }
 
+    app.index_toppings = function (toppings) {
+
+        let i = 0;
+        for (t of toppings) {
+            t.topping_idx = i++;
+
+            //convert cents to dollars
+            t.price = app.dollars(t.price)
+            t.isEditing = false;
+        }
+        return toppings;
+    }
+
+    app.reindex_toppings = function (toppings) {
+        let i = 0;
+        for (t of app.data.toppings) {
+            t.topping_idx = i++;
         }
     }
 
@@ -171,9 +192,17 @@ let init = (app) => {
         }*/
     };
 
+    app.cents = function (dollars) {
+        dollars = dollars.toString();
+        if (dollars.indexOf('.') < 0) return dollars;
+
+        return Number.parseInt(dollars.split(".").join(""));
+    }
+
     app.save_item = function (cat_idx, drink_idx) {
         let category = app.data.categories[cat_idx];
         if (drink_idx != null) {
+            //is drink
             let drink = category.drinks[drink_idx];
 
             if (_.isEqual(drink.content, drink.original_content)) {
@@ -181,12 +210,18 @@ let init = (app) => {
                 return;
             }
 
-            axios.post(save_drink_url, drink.content).then(function (res) {
+            //make sure the server get the currency in terms of pennies.
+            let data = deepCopy(drink.content);
+            data.price = app.cents(data.price);
+
+            axios.post(save_drink_url, data).then(function (res) {
                 drink.content.id = res.data.id;
                 drink.original_content = deepCopy(drink.content);
+                
                 drink.isEditing = false;
             }).catch(function () { });
         } else {
+            //is category
             if (_.isEqual(category.content, category.original_content)) {
                 category.isEditing = false;
                 return;
@@ -197,6 +232,22 @@ let init = (app) => {
                 category.isEditing = false;
             }).catch(function () { })
         }
+    }
+
+    app.save_toppings = function () {
+        toppings = app.data.toppings.map(function (t) {
+            t = deepCopy(t);
+            t.price = app.cents(t.price);
+            return t;
+        });
+
+        axios.post(save_topping_url, { toppings: toppings }).then(function (res) {
+            app.vue.toppings = app.index_toppings(res.data.drink_toppings)
+            app.data.topping_error = false;
+        }).catch(function () {
+            app.data.topping_error = true;
+        });
+
     }
 
 
@@ -264,24 +315,26 @@ let init = (app) => {
 
     }
 
-    app.do_delete = (slide_idx) => {
-        let p = app.vue.posts[slide_idx];
-        if (p.id === null) {
-            // TODO:
-            // If the post has never been added to the server, simply deletes it.
-            p.parent.children--;
-            app.vue.posts.splice(slide_idx, 1);
-            app.reindex();
-        } else {
-            axios.post(delete_url, { id: p.id }).then(function () {
-                p.parent.children--;
-                app.vue.posts.splice(slide_idx, 1);
-                app.reindex();
-            });
-            // TODO: Deletes it on the server.
-        }
 
-    };
+    app.isEditing_toppings = function () {
+        return app.data.toppings.some(function (t) { return t.isEditing });
+    }
+
+    app.add_topping = function () {
+        app.data.toppings.unshift({
+            name: "",
+            description: "",
+            price: "0.00",
+            image: "",
+            isEditing: true
+        })
+        app.reindex_toppings(app.data.toppings);
+    }
+
+    app.delete_topping = function (topping_idx) {
+        app.data.toppings.splice(topping_idx, 1);
+        app.reindex_toppings(app.data.toppings)
+    }
 
     app.uploadedimage = function (slide_idx, filename) {
         slide = app.data.slides[slide_idx];
@@ -299,7 +352,11 @@ let init = (app) => {
         cat.content.image = path;
     }
 
+
+
     // We form the dictionary of all methods, so we can assign them
+
+
     // to the Vue app in a single blow.
     app.methods = {
         drink_image_uploaded: app.drink_image_uploaded,
@@ -310,7 +367,10 @@ let init = (app) => {
         delete_item: app.delete_item,
         cancel_edit: app.cancel_edit,
         show_drink_modal: app.show_drink_modal,
-        isEditing: app.isEditing
+        isEditing: app.isEditing,
+        add_topping: app.add_topping,
+        delete_topping: app.delete_topping,
+        save_toppings: app.save_toppings,
     };
 
     app.computed = {
@@ -333,7 +393,7 @@ let init = (app) => {
 
         axios.get(get_menu_url).then(function (res) {
             app.vue.categories = app.index(res.data.categories);
-            app.vue.toppings = app.index_toppings(res.data.toppings);
+            app.vue.toppings = app.index_toppings(res.data.drink_toppings);
         });
     };
 

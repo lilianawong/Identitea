@@ -2,8 +2,155 @@
 
 <div id="vue-target">
 
+    <div v-if="!cart_visible" class="has-background-white" @click="show_cart(true)" style="z-index: 99999999;border-radius: 90px;width: 65px;height: 65px;
+        position: fixed;bottom: 20px;right: 20px;text-align: center;">
+        <i style="font-size: 47px;  margin-top: 9px; color: #23d160;" class="fa fa-shopping-cart"
+            aria-hidden="true"></i>
+        <div style="position: relative;font-size: 35px;bottom: 50px;color: #ff0000;text-shadow: 0px 0px 1px black;">
+            {{cart.length}}</div>
+    </div>
+
+
     <section class="section has-background-black">
-        <div class="container ">
+        <div v-if="cart_visible">
+
+            <div class="box">
+
+                <div class="level is-mobile">
+                    <div class="level-left">
+                        <div class="level-item">
+                            <i style="font-size: 47px;" class="fa fa-shopping-cart" aria-hidden="true"></i>
+                            
+                        </div>
+                        <div class="level-item">
+                            Cart
+                        </div>
+                    </div>
+
+                    <div class="level-right">
+                        <div class="level-item">
+                            <div @click="show_cart(false)" class="button" style="margin-right:10px;">
+                                Back
+                            </div>
+                            <div class="button">
+                                Place Order
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="box" style="overflow-x: scroll;">
+                <table class="table is-hidden-mobile is-fullwidth">
+                    <thead>
+                        <tr>
+                            <th><abbr title="Item">Item</abbr></th>
+                            <th><abbr title="Product Name">Name</abbr></th>
+                            <th><abbr title="Price of One">price</abbr></th>
+                            <th><abbr title="Toppings">Toppings</abbr></th>
+                            <th><abbr title="Quantity">Qty</abbr></th>
+                            <th><abbr title="Total Price">Total Price</abbr></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="c in cart">
+                            <td><img :src="c.image" style="width:100px"></td>
+                            <td>{{c.item}}</td>
+                            <td>{{dollars(c.price_one)}}</td>
+                            <td>
+                                <ul>
+                                    <li v-for="e in c.extras">
+                                        {{e.name + " " + dollars(e.price)}}
+                                    </li>
+                                    <ul>
+                            </td>
+                            <td>x {{c.qty}}</td>
+                            <td>{{dollars(total_item(c))}}</td>
+                            <td>
+                                <div class="button" @click="remove_from_cart(c._idx)">remove</div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td>Total:</td>
+                            <td>{{dollars(total_cart(cart))}}</td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <table class="table is-hidden-tablet is-fullwidth">
+                    <thead>
+                        <tr>
+                            <th><abbr title="Item">Item</abbr></th>
+                            <th><abbr title=""></abbr></th>
+
+                            <th><abbr title="Toppings">Toppings</abbr></th>
+                            <th><abbr title="Total Price">Total Price</abbr></th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="c in cart">
+                            <td><img :src="c.image" style="width:100px">
+                                <div class="button" @click="remove_from_cart(c._idx)">remove</div>
+                            </td>
+                            <td>{{c.item}} <br> {{dollars(c.price_one)}} x {{c.qty}}</td>
+                            <td>
+                                <ul>
+                                    <li v-for="e in c.extras">
+                                        {{e.name + " " + dollars(e.price)}}
+                                    </li>
+                                    <ul>
+                            </td>
+
+                            <td>{{dollars(total_item(c))}}</td>
+                        </tr>
+
+                        <tr>
+
+                            <td></td>
+                            <td></td>
+                            <td>Total:</td>
+                            <td>{{dollars(total_cart(cart))}}</td>
+
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="level is-mobile">
+                    <div class="level-left">
+
+                    </div>
+
+                    <div class="level-right">
+                        <div class="level-item">
+                            <div @click="show_cart(false)" class="button" style="margin-right:10px;">
+                                Back
+                            </div>
+                            <div class="button">
+                                Place Order
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+
+        <div v-if="!cart_visible" class="container">
             <div class="columns">
                 <div class="column is-two-thirds">
                     <section class="hero">
@@ -26,14 +173,14 @@
                 <div class="container">
                     <div class="columns is-centered">
                         <div class='column  has-text-centered'>
-                            <img  :src="c.image" style="height: 20vh; width: auto;" alt="milktea logo"></img>
+                            <img :src="c.image" style="height: 20vh; width: auto;" alt="milktea logo"></img>
                         </div>
                     </div>
                 </div>
 
                 <div class="columns is-text-right is-centered is-multiline">
                     <div v-for="d in c.drinks" class="column  has-text-centered is-one-fifth">
-                        <div v-on:click="activatemodal(d.name,d.description,d.image)">
+                        <div v-on:click="activatemodal(d.name,d.description,d.image, d.price)">
                             <img class="niceimagemenu" :src="d.image" width="200" height="200" alt="boba"></img>
                             <div class="has-text-success">{{d.name}}</div>
                         </div>
@@ -50,17 +197,62 @@
                             <p class="control ">
                             <div class="columns">
                                 <div class="column is-half">
-                                    <img class="modalniceimage" :src=modalimages width="200" height="200" alt="boba"></img>
+                                    <img class="modalniceimage" :src=modalimages width="200" height="200"
+                                        alt="boba"></img>
                                     <div>
-                                        <b> {{modalname}}</b>
+                                        <b> {{modalname}}</b> {{"(" + dollars(modal_price) + ")"}}
+                                    </div>
+                                    <br>
+                                    <div class="control has-text-centered">
+                                        Sweet:<br>
+                                        <label class="radio">
+                                            <input v-model="modal_sweet" :value="30" name="modal_sweet" type="radio">
+                                            30&#37;
+                                        </label>
+                                        <label class="radio">
+                                            <input v-model="modal_sweet" :value="75" name="modal_sweet" type="radio">
+                                            75&#37;
+                                        </label>
+                                        <label class="radio">
+                                            <input v-model="modal_sweet" :value="100" name="modal_sweet" type="radio">
+                                            100&#37;
+                                        </label>
+
                                     </div>
 
                                 </div>
-                               
+
                                 <div class="column is-half">
-                                    <p class="nicedisplaytest" style = "font-family:courier,arial,helvetica;">
+                                    <p class="nicedisplaytest" style="font-family:courier,arial,helvetica;">
                                         {{modaldescription}}</p>
+
+
+                                    <div style="text-align: left;">
+                                        <h5 class="title is-5">Toppings:</h3>
+
+
+                                            <div class="columns is-multiline is-mobile">
+                                                <div class="column is-half" v-for="t in drink_toppings">
+                                                    <label style="margin-right:10px" class="checkbox">
+                                                        <input v-model="modal_toppings" :value="t.topping_idx"
+                                                            type="checkbox">
+                                                        {{t.name + (t.price==0 ? "" : " (" + dollars(t.price) + ")")}}
+                                                    </label>
+                                                </div>
+                                            </div>
+
+                                            <label class="is-pull-left"> Qty:
+                                                <input type="text" v-model="modal_qty" value="1">
+                                            </label>
+                                            <div class="button" @click="add_to_cart()">
+                                                <i class="fa fa-cart-plus is-pull-right" aria-hidden="true"></i>
+                                            </div>
+                                    </div>
+
                                 </div>
+
+
+
 
                             </div>
                             </p>
@@ -71,7 +263,7 @@
                 <button @click="close" class="modal-close"></button>
 
             </div>
-            
+
             <div class="columns">
                 <div class="column is-two-thirds">
                     <section class="hero">
@@ -100,8 +292,6 @@
 
                     <img src="images/pokemenu2.jpg " width="500" height="500" alt="pokemenu">
                 </div>
-
-
 
             </div>
 

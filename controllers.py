@@ -87,7 +87,7 @@ def admin_menu():
         delete_topping = URL("admin_delete_topping", signer=url_signer),
         save_category = URL("admin_save_category", signer=url_signer),
         save_drink = URL("admin_save_drink", signer=url_signer),
-        save_topping = URL("admin_save_topping", signer=url_signer),
+        save_toppings = URL("admin_save_toppings", signer=url_signer),
         drink_uploader=file_uploader(bindCb="drink_image_uploaded", emitid="d.o"),
         category_uploader = file_uploader(bindCb="category_image_uploaded", emitid="c.cat_idx")
     )
@@ -104,7 +104,14 @@ def get_menu_items():
         pass
     toppings = db(db.drink_toppings).select().as_list()
     
-    return dict(categories=cats, toppings=toppings)
+    return dict(categories=cats, drink_toppings=toppings)
+
+@action('place_order', method=['POST'])
+@action.uses(*common_fixtures)
+def place_order():
+    pass
+
+
 
 @action('admin_save_category', method=['POST'])
 @action.uses(*admin_fixtures)
@@ -142,6 +149,32 @@ def admin_save_drink():
         )
         return dict( id=id)
 
+@action('admin_save_toppings', method=['POST'])
+@action.uses(*admin_fixtures)
+def admin_save_toppings():
+    if random.random() < 0.5:
+        raise HTTP(500)
+    insert_toppings = [i for i in request.json.get('toppings') if i.get('id') == None]
+    update_toppings =  [i for i in request.json.get('toppings') if i.get('id') != None ] 
+    a = db.drink_toppings.bulk_insert(insert_toppings)
+    
+    for s in update_toppings:
+        db.drink_toppings[s.get('id')] = s
+    
+    #db.slides.bulk_update(update_slides)
+    redirect(URL('get_drink_toppings'))
+    return
+
+@action('get_drink_toppings', method=['GET'])
+@action.uses(*common_fixtures)
+def get_menu_toppings():
+    #need to get all the categories, then all drinks belonging to each category
+    toppings = db(db.drink_toppings).select().as_list()
+    return dict(drink_toppings=toppings)
+
+
+
+
 @action('admin_delete_drink', method=['POST'])
 @action.uses(*admin_fixtures)
 def admin_delete_drink():
@@ -157,14 +190,7 @@ def admin_delete_category():
     db(db.drinks.categoryId == c_id).delete()
     pass
 
-@action('admin_save_topping', method=['POST'])
-@action.uses(*admin_fixtures)
-def admin_save_topping():
-    topping = request.json.get('topping')
-    if topping.get('id') != None:
-        db.drink_toppings[topping.get('id')] = topping
-    else:
-        db.drink_toppings.insert(topping)
+
 
 
 
@@ -199,7 +225,7 @@ def admin_save_slides():
 @action('admin_getslides', method=['GET'])
 @action.uses(*common_fixtures)
 def admin_slides():
-    data = db(db.slides).select(orderby=db.slides.slide_number).as_list()
+    data = db(db.slides.deleted != True).select(orderby=db.slides.slide_number).as_list()
     return dict(slides=data)
 
 @action('get_menu_drinks')

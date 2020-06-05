@@ -51,15 +51,15 @@
                             class="box backshadow greycard" style="text-align: center; padding: 10px;">
                             <!--<img :src="d.content.image">-->
                             <figure class="is-128x128 has-text-centered " class="image is-128x128">
-                                <img 
-                                    :src="d.content.image ? d.content.image : temp_sq_img"></img>
+                                <img :src="d.content.image ? d.content.image : temp_sq_img"></img>
                             </figure>
                             <h3>{{ d.content.name }}</h3>
                             <div v-on:click.stop @click="edit_item(c.cat_idx, d.drink_idx)" class="button">
                                 <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
                             </div>
                         </div>
-                        <div v-else class="box backshadow greycard" style="width: 200px;overflow: hidden;padding: 10px;">
+                        <div v-else class="box backshadow greycard"
+                            style="width: 200px;overflow: hidden;padding: 10px;">
                             <figure class="is-128x128 has-text-centered " class="image is-128x128">
                                 <img style="width:128px; height:128px"
                                     :src="d.content.image ? d.content.image : temp_sq_img"></img>
@@ -68,6 +68,8 @@
                             <label>title: <input v-model="d.content.name" style="width:100%;"></input></label>
                             <label>description: <textarea rows="5" v-model="d.content.description"
                                     style="width:100%; resize: vertical;"></textarea></label>
+                            <label>price: <input type="number" min="0.01" step="0.01" v-model="d.content.price"
+                                    style="width:100%;"></input></label>
 
                             <div class="level" style="margin-top:10px">
                                 <div class="level-left">
@@ -113,7 +115,7 @@
                                                     {{d.content.description}}</p>
                                                 <div> Price: {{d.content.price}} </div>
                                             </div>
-                                            
+
 
                                         </div>
                                         </p>
@@ -129,7 +131,8 @@
 
                     </div>
                     <div class="column is-one-fifth">
-                        <div @click="add_item(c.cat_idx)" class="button backshadow greycard " style="width:200px; height:250px">
+                        <div @click="add_item(c.cat_idx)" class="button backshadow greycard "
+                            style="width:200px; height:250px">
                             <i class="fa fa-plus-circle" aria-hidden="true"></i>
                         </div>
                     </div>
@@ -144,25 +147,49 @@
 
 
     </section>
+    
     <section class="has-background-grey">
+        <br>
         <div class="container">
             <h2 class="title is-2  has-text-white titleshadow">Edit Drink Toppings</h2>
+            
+            
+            
             <div>
                 <ul>
-                    <li v-for="t in toppings">
-                        <div>{{t.name}}</div>
-                        <div>{{t.description}}</div>
-                        <i @click="edit_topping(t.topping_idx)" class="fa fa-pencil-square-o" aria-hidden="true"></i>
-                        <!--add image in the future -->
+                    <li>
+                        <div @click="add_topping()" class="button"> + Add Item</div>
+                        <button @click="save_toppings()" class="button has-text-info">
+                            Save</button>
+                        <span v-if="topping_error" class="has-text-danger"> Error: please try again</span>
                     </li>
                     <li>
-                        <div class="has-text-white">
-                            <h1> Topping</h1>
-                        </div>
-                        <div @click="add_topping()" class="button"> + Add Item</div>
+                        <br>
                     </li>
+                    <li v-for="t in toppings">
+                        <div style="margin-bottom: 20px;" class="box">
+                            <label>Name:<input v-model="t.name" type="text">
+                            </label>
+
+                            <label>Description: <textarea v-model="t.description"></textarea>
+                            </label>
+
+
+                            <label>Price: <input v-model="t.price"></input>
+                            </label>
+
+
+                            <div @click="delete_topping(t.topping_idx)" class="button">
+                                <i class="fa fa-minus-circle" aria-hidden="true"></i></div>
+                        </div>
+
+                        <!--add image in the future -->
+                    </li>
+
                 </ul>
             </div>
+
+            <br><br>
 
         </div>
     </section>
@@ -179,7 +206,7 @@
 
     let save_category_url = "[[=XML(save_category)]]";
     let save_drink_url = "[[=XML(save_drink)]]";
-    let save_topping_url = "[[=XML(save_topping)]]";
+    let save_topping_url = "[[=XML(save_toppings)]]";
 
 
 </script>

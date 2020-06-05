@@ -27,6 +27,37 @@ db.define_table("admins",
                 Field("level", "integer", default=0)
 )
 
+""" 
+                order_json:
+                    {
+                        items:[
+                            {
+                                item:"MilkTea",
+                                extras:["Boba", "jello"],
+                                special_request:"please put the jello on the side"
+                                qty:1
+                                price:10
+                                sweet:30
+                            }
+                        ]
+                        sub_total:990,
+                        tax:10,
+                        total:1000, 
+                    }
+                """
+
+db.define_table("orders", 
+                Field("user_id", "integer"),
+                Field("first_name", "text"),
+                Field("last_name", "text"),
+                Field("fulfilled", "boolean"),
+                Field("opened_date", 'datetime', default=get_time),
+                Field("closed_date", 'datetime', default=get_time),
+                Field("sub_total", "integer"), #cents
+                Field("tax", "integer"),
+                Field("order_json", "text")
+                )
+
 db.define_table("menu_categories",
                 Field("name", "text"),
                 Field("image","text"))
@@ -36,12 +67,13 @@ db.define_table("drinks",
                 Field('description', 'text'),
                 Field('image', 'text'),
                 Field('categoryId', 'integer'), #menu category
-                Field('price', 'integer')
+                Field('price', 'integer', default=0)
                 )
 
 db.define_table("drink_toppings",
                 Field('name', 'text'),
                 Field('description', 'text'),
+                Field('price', "integer"), #cents
                 Field('image', 'text')
                 )
 
