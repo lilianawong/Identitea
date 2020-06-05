@@ -43,7 +43,7 @@ url_signer = URLSigner(session)
 groups = Tags(db.auth_user)
 admin_check = Admin_Check(auth, db, groups)
 
-common_fixtures = [db, session, url_signer]
+common_fixtures = [session, db, url_signer]
 admin_fixtures = common_fixtures + [auth.user, admin_check]
 
 user = None
@@ -86,6 +86,7 @@ def admin_menu():
         delete_drink = URL("admin_delete_drink", signer=url_signer),
         delete_topping = URL("admin_delete_topping", signer=url_signer),
         save_category = URL("admin_save_category", signer=url_signer),
+        save_categories = URL("admin_save_categories", signer=url_signer),
         save_drink = URL("admin_save_drink", signer=url_signer),
         save_toppings = URL("admin_save_toppings", signer=url_signer),
         drink_uploader=file_uploader(bindCb="drink_image_uploaded", emitid="d.o"),
@@ -99,7 +100,7 @@ def get_menu_items():
     cats = db(db.menu_categories).select()
     cats = cats.as_list()
     for c in cats:
-        drinks = db(db.drinks.categoryId == c.get('id')).select(orderby=db.drinks.name)
+        drinks = db(db.drinks.categoryId == c.get('id')).select(orderby=db.drinks.sort)
         c['drinks'] = drinks.as_list()
         pass
     toppings = db(db.drink_toppings).select().as_list()
@@ -112,6 +113,21 @@ def place_order():
     pass
 
 
+@action('admin_save_categories', method=['POST'])
+@action.uses(*admin_fixtures)
+def admin_save_categories():
+    categories = request.json.get('categories')
+    update_categories =  [i for i in request.json.get('categories') if i.get('id') != None ] 
+    
+    for s in update_categories:
+        db(db.menu_categories.id == s.get('id')).update(sort = s['cat_idx'])
+        for d in s['drinks']:
+            db(db.drinks.id == d['id']).update(sort=d['drink_idx'], categoryId=d['categoryId'])
+    return
+
+
+
+    
 
 @action('admin_save_category', method=['POST'])
 @action.uses(*admin_fixtures)

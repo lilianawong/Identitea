@@ -60,14 +60,16 @@ db.define_table("orders",
 
 db.define_table("menu_categories",
                 Field("name", "text"),
-                Field("image","text"))
+                Field("image","text"),
+                Field('sort', 'integer', default=0))
 
 db.define_table("drinks",
                 Field('name', 'text'),
                 Field('description', 'text'),
                 Field('image', 'text'),
                 Field('categoryId', 'integer'), #menu category
-                Field('price', 'integer', default=0)
+                Field('price', 'integer', default=0),
+                Field('sort', 'integer', default=0)
                 )
 
 db.define_table("drink_toppings",

@@ -1,3 +1,4 @@
+
 // This will be the object that will contain the Vue attributes
 // and be used to initialize it.
 let app = {};
@@ -17,6 +18,7 @@ let init = (app) => {
         categories: [],
         toppings: [],
         topping_error: false,
+        order_is_saved:true,
         temp_sq_img: "images/128x128.png"
     };
 
@@ -96,6 +98,8 @@ let init = (app) => {
         let drinks = category.drinks;
         let i = 0;
         for (d of drinks) {
+            d.content.categoryId = category.content.id;
+            d.original_content.categoryId = category.content.id;
             d.drink_idx = i++;
             d.o = { drink_idx: d.drink_idx, cat_idx: category_idx }
         }
@@ -106,6 +110,7 @@ let init = (app) => {
         //let drinks = category.drinks;
         let i = 0;
         for (let i = 0; i < drinks.length; i++) {
+            //drinks[i].categoryId = category.id;
             drinks[i].price = app.dollars(drinks[i].price)
             drinks[i].content = deepCopy(drinks[i])
             drinks[i].original_content = deepCopy(drinks[i].content)
@@ -233,6 +238,37 @@ let init = (app) => {
             }).catch(function () { })
         }
     }
+
+    app.save_order = function(){
+        //save all the items to the server after a reorder
+        //all drinks should be saved so dont worry about original content
+        //toppings on the other hand, will be more complicated
+        //prepare data
+
+        let cats  = deepCopy(app.data.categories);
+        cats = cats.map(function(c){
+            return {
+                id:c.content.id,
+                cat_idx: c.cat_idx,
+                drinks: c.drinks.map(function(d){
+                    return {
+                        id: d.content.id,
+                        categoryId: d.content.categoryId,
+                        drink_idx:d.drink_idx
+                    }
+                })
+            };
+        });
+
+        axios.post(save_categories_url, {categories:cats}).then(function(res){
+            app.data.order_is_saved = true;
+        }).catch(function(){
+            app.data.order_is_saved = false;
+        });
+
+    }
+
+
 
     app.save_toppings = function () {
         toppings = app.data.toppings.map(function (t) {
@@ -371,6 +407,22 @@ let init = (app) => {
         add_topping: app.add_topping,
         delete_topping: app.delete_topping,
         save_toppings: app.save_toppings,
+        save_order: app.save_order,
+        add: function() {
+            this.list.push({ name: "Juan" });
+          },
+          replace: function() {
+            this.list = [{ name: "Edgard" }];
+          },
+          clone: function(el) {
+            return {
+              name: el.name + " cloned"
+            };
+          },
+          log: function(evt) {
+            app.data.order_is_saved = false;
+            app.reindex();
+          }
     };
 
     app.computed = {

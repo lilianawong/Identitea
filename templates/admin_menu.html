@@ -5,6 +5,31 @@
 [[end]]
 
 <div id="vue-target">
+
+    <div style="text-align: center; width: 100%; position:fixed; bottom:0px; left:0px;  height:10vh; z-index: 999;">
+        <div class="box has-background-warning" v-if="!order_is_saved"
+            style="width:90%; margin-right:auto; margin-left:auto; ">
+            <div class="">
+                <div class="level is-mobile">
+                    <div class="level-left">
+                        <div class="level-item">
+                            Order has been modified, please save!
+                        </div>
+                    </div>
+                    <div class="level-right">
+                        <div class="level-item">
+                            <div class="button" @click="save_order()">
+                                Save
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
     <section class="section has-background-grey">
         <div class="container">
             <h1 class="title is-1 has-text-white titleshadow">Edit Menu Items</h1>
@@ -44,11 +69,14 @@
                         </div>
                     </div>
                 </div>
-                <div class="columns is-multiline">
 
-                    <div v-for="d in c.drinks" class="column is-one-fifth">
+
+
+                <draggable class="columns is-multiline " v-model="c.drinks" group="drinks" draggable=".asd"
+                    @change="log">
+                    <div v-for="d in c.drinks" class="column is-one-fifth is-fullwidth asd" :key="d.content.id">
                         <div v-if="d.isEditing == false" @click="show_drink_modal(c.cat_idx, d.drink_idx, true)"
-                            class="box backshadow greycard" style="text-align: center; padding: 10px;">
+                            class="box backshadow greycard " style="text-align: center; padding: 10px;">
                             <!--<img :src="d.content.image">-->
                             <figure class="is-128x128 has-text-centered " class="image is-128x128">
                                 <img :src="d.content.image ? d.content.image : temp_sq_img"></img>
@@ -58,8 +86,8 @@
                                 <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
                             </div>
                         </div>
-                        <div v-else class="box backshadow greycard"
-                            style="width: 200px;overflow: hidden;padding: 10px;">
+                        <div v-else class="box backshadow greycard is-fullwidth"
+                            style="overflow: hidden;padding: 10px;">
                             <figure class="is-128x128 has-text-centered " class="image is-128x128">
                                 <img style="width:128px; height:128px"
                                     :src="d.content.image ? d.content.image : temp_sq_img"></img>
@@ -71,7 +99,7 @@
                             <label>price: <input type="number" min="0.01" step="0.01" v-model="d.content.price"
                                     style="width:100%;"></input></label>
 
-                            <div class="level" style="margin-top:10px">
+                            <div class="level is-mobile" style="margin-top:10px">
                                 <div class="level-left">
                                     <div class="level-item">
                                         <div class="button" @click="cancel_edit(c.cat_idx, d.drink_idx)">
@@ -94,6 +122,7 @@
 
                             </div>
                         </div>
+
                         <div v-bind:class="{'is-active': d.show_modal, modal:true}">
                             <div @click="show_drink_modal(c.cat_idx, d.drink_idx, false)" class="modal-background">
                             </div>
@@ -129,32 +158,34 @@
                         </div>
 
 
+
                     </div>
-                    <div class="column is-one-fifth">
-                        <div @click="add_item(c.cat_idx)" class="button backshadow greycard "
-                            style="width:200px; height:250px">
-                            <i class="fa fa-plus-circle" aria-hidden="true"></i>
-                        </div>
+                </draggable>
+                <div class="column is-one-fifth">
+                    <div @click="add_item(c.cat_idx)" class="button backshadow greycard "
+                        style="width:200px; height:250px">
+                        <i class="fa fa-plus-circle" aria-hidden="true"></i>
                     </div>
                 </div>
+            </div>
 
-            </div>
-            <br><br>
-            <div @click="add_item()" class="button backshadow greycard" style="width:100%">
-                <i class="fa fa-plus-circle" aria-hidden="true"></i>
-            </div>
+        </div>
+        <br><br>
+        <div @click="add_item()" class="button backshadow greycard" style="width:100%">
+            <i class="fa fa-plus-circle" aria-hidden="true"></i>
+        </div>
 
 
 
     </section>
-    
+
     <section class="has-background-grey">
         <br>
         <div class="container">
             <h2 class="title is-2  has-text-white titleshadow">Edit Drink Toppings</h2>
-            
-            
-            
+
+
+
             <div>
                 <ul>
                     <li>
@@ -205,8 +236,10 @@
     let delete_topping_url = "[[=XML(delete_topping)]]";
 
     let save_category_url = "[[=XML(save_category)]]";
+    let save_categories_url = "[[=XML(save_categories)]]"
     let save_drink_url = "[[=XML(save_drink)]]";
     let save_topping_url = "[[=XML(save_toppings)]]";
+    
 
 
 </script>
