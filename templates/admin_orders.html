@@ -1,0 +1,52 @@
+[[extend 'admin_layout.html']]
+
+[[block page_head]]
+<link rel="stylesheet" href="[[=URL('static/components/fileupload/fileupload.css')]]">
+[[end]]
+
+<div id="vue-target">
+
+    <section class="section has-background-grey">
+        <div class="container">
+            <h1 class="title is-1 has-text-white titleshadow">Orders</h1>
+
+
+            
+  <table class="table is-striped is-fullwidth">
+    <tr>
+      <th>Id</th>
+      <th>Opened</th>
+      <th>Closed</th>
+      <th>Order</th>
+    
+      <th></th>  
+    </tr>
+    [[for row in orders:]]
+    <tr>
+      <td>[[=row.id]]</td>
+      <td>[[=row.opened_date]]</td>
+      <td>[[=row.closed_date]]</td>
+      <td>[[=row.order_json]]</td>
+      <td>
+        <a class="button" href="#">
+          Fulfilled
+        </a>
+      </td>
+      
+    </tr>
+    [[pass]]
+  </table>
+
+    </section>
+
+</div>
+
+[[block page_scripts]]
+<!-- Loads the index-specific js for Vue -->
+<script>
+    
+    
+
+
+</script>
+[[end]]

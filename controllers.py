@@ -60,7 +60,8 @@ def index():
 @action.uses('menu.html', *common_fixtures)
 def index():
        
-    return dict( get_category= URL("get_menu_items"))
+    return dict( get_category= URL("get_menu_items"),
+                place_order=URL("place_order", signer=url_signer))
 
 @action('quiz')
 @action.uses('quiz.html', *common_fixtures)
@@ -110,6 +111,21 @@ def get_menu_items():
 @action('place_order', method=['POST'])
 @action.uses(*common_fixtures)
 def place_order():
+    order = request.json.get('order')
+
+    #check each item and verify the price
+    #never trust the user!
+
+    db.orders.insert(
+        order_json=order,
+        user_id=None,
+        first_name=None,
+        last_name=None,
+        fulfilled=False,
+        sub_total=0,
+        tax=0
+    )
+
     pass
 
 
@@ -207,6 +223,14 @@ def admin_delete_category():
     pass
 
 
+@action('admin_orders', method=['GET'])
+@action.uses(*admin_fixtures, file_uploader, 'admin_orders.html')
+def admin_slides():
+    
+    orders = db(db.orders).select(orderby=~db.orders.opened_date)
+    return dict(
+        orders = orders
+    )
 
 
 

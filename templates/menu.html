@@ -32,7 +32,7 @@
                             <div @click="show_cart(false)" class="button" style="margin-right:10px;">
                                 Back
                             </div>
-                            <div class="button">
+                            <div class="button" @click="place_order()">
                                 Place Order
                             </div>
 
@@ -135,7 +135,7 @@
                             <div @click="show_cart(false)" class="button" style="margin-right:10px;">
                                 Back
                             </div>
-                            <div class="button">
+                            <div class="button" @click="place_order()">
                                 Place Order
                             </div>
 
@@ -300,6 +300,7 @@
             <!-- Loads the index-specific js for Vue -->
             <script>
                 let get_category_url = "[[=XML(get_category)]]";
+                let place_order_url = "[[=XML(place_order)]]"
 
             </script>
             <script src="js/menu.js"></script>

@@ -81,9 +81,20 @@ let init = (app) => {
         app.data.modalIsActive = false;
     };
 
+    app.place_order = function(){
+
+        axios.post(place_order_url, {order:app.data.cart}).then(function(res){
+            app.data.cart = [];
+            app.data.cart_visible = false;
+        }).catch(function(){
+            //do nothing
+        })
+    }
+
 
     app.methods = {
         // Complete.
+        place_order:app.place_order,
         goto_page: function (page_name) {
 
             //pre-init
@@ -107,7 +118,7 @@ let init = (app) => {
                 price_one: app.data.modal_price,
                 qty: app.data.modal_qty,
                 extras: app.data.modal_toppings,
-                sweet:app.data.model_sweet,
+                sweet:app.data.modal_sweet,
             }
 
             //resolve toppings data
@@ -124,10 +135,10 @@ let init = (app) => {
         },
 
         remove_from_cart: function(idx){
-            app.data.cart.slice(idx,1);
+            app.data.cart.splice(idx,1);
             let i = 0;
             for(a in app.data.cart){
-                a.idx = i++; 
+                a._idx = i++; 
             }
         },
 
