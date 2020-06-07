@@ -6,47 +6,83 @@
 
 <div id="vue-target">
 
-    <section class="section has-background-grey">
-        <div class="container">
-            <h1 class="title is-1 has-text-white titleshadow">Orders</h1>
+  <section class="section has-background-grey">
+    <div class="container">
+      <h1 class="title is-1 has-text-white titleshadow">Orders</h1>
 
 
-            
-  <table class="table is-striped is-fullwidth">
-    <tr>
-      <th>Id</th>
-      <th>Opened</th>
-      <th>Closed</th>
-      <th>Order</th>
-    
-      <th></th>  
-    </tr>
-    [[for row in orders:]]
-    <tr>
-      <td>[[=row.id]]</td>
-      <td>[[=row.opened_date]]</td>
-      <td>[[=row.closed_date]]</td>
-      <td>[[=row.order_json]]</td>
-      <td>
-        <a class="button" href="#">
-          Fulfilled
-        </a>
-      </td>
-      
-    </tr>
-    [[pass]]
-  </table>
+      <h2 class="title is-2 has-text-white titleshadow">Pending:</h2>
+      <table class="table is-striped is-fullwidth">
+        <tr>
+          <th>Id</th>
+          <th>Opened</th>
+          
+          <th>Order</th>
 
-    </section>
+          <th></th>
+        </tr>
+        <tr v-for="o in orders" v-if="!o.fulfilled">
+          <td>{{o.id}}</td>
+          <td>{{o.opened_date}}</td>
+          
+          <td>
+            <div v-for="i in o.order_items">
+              <span> {{i.item}}</span>
+              <p v-for="d in i.details" style="margin-left:2em;"><span >{{d}}</span></p>
+              <br>
+            </div>
+
+          </td>
+          <td>
+            <div @click="fulfill(o._idx)" class="button">
+              Fulfilled
+            </div>
+          </td>
+
+        </tr>
+        [[pass]]
+      </table>
+
+      <h2 class="title is-2 has-text-white titleshadow">Fulfilled:</h2>
+      <table class="table is-striped is-fullwidth">
+        <tr>
+          <th>Id</th>
+          <th>Opened</th>
+          <th>Closed</th>
+          <th>Order</th>
+
+          <th></th>
+        </tr>
+        <tr v-for="o in orders" v-if="o.fulfilled">
+          <td>{{o.id}}</td>
+          <td>{{o.opened_date}}</td>
+          <td>{{o.closed_date}}</td>
+          <td>
+            <div v-for="i in o.order_items">
+              <span> {{i.item}}</span>
+              <p v-for="d in i.details"><span style="margin-left:2em;">{{d}}</span></p>
+              <br>
+            </div>
+          </td>
+          <td>
+            Fulfilled
+          </td>
+
+        </tr>
+        [[pass]]
+      </table>
+
+  </section>
 
 </div>
 
 [[block page_scripts]]
 <!-- Loads the index-specific js for Vue -->
 <script>
-    
-    
 
+  let get_orders_url = "[[=XML(get_orders)]]";
+  let fulfil_order_url = "[[=XML(fulfil_order_url)]]";
 
 </script>
+<script src="js/admin_orders.js"></script>
 [[end]]

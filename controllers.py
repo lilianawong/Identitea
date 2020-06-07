@@ -24,12 +24,13 @@ The path follows the bottlepy syntax.
 session, db, T, auth, and tempates are examples of Fixtures.
 Warning: Fixtures MUST be declared with @action.uses({fixtures}) else your app will result in undefined behavior
 """
-
+import json
 import random
 import time
 import uuid
-
-from py4web import action, request, abort, redirect, URL, Field, HTTP
+from gevent import sleep
+import bottle
+from py4web import action, request, response, abort, redirect, URL, Field, HTTP
 from py4web.utils.form import Form, FormStyleBulma
 from py4web.utils.url_signer import URLSigner
 from py4web.utils.tags import Tags
@@ -37,7 +38,10 @@ from yatl.helpers import A
 from . common import db, session, T, cache, auth, signed_url
 from apps.identitea.fixtures import Admin_Check
 from .components.fileupload import FileUpload
+from gevent import monkey; monkey.patch_all()
 
+import gevent
+from bottle import route, run
 
 url_signer = URLSigner(session)
 groups = Tags(db.auth_user)
@@ -117,7 +121,7 @@ def place_order():
     #never trust the user!
 
     db.orders.insert(
-        order_json=order,
+        order_json=json.dumps(order),
         user_id=None,
         first_name=None,
         last_name=None,
@@ -224,15 +228,42 @@ def admin_delete_category():
 
 
 @action('admin_orders', method=['GET'])
-@action.uses(*admin_fixtures, file_uploader, 'admin_orders.html')
-def admin_slides():
+@action.uses(*admin_fixtures, 'admin_orders.html')
+def admin_orders():
+    
+    return dict(
+        get_orders=URL("admin_get_orders", signer=url_signer),
+        fulfil_order_url = URL("admin_fulfil_order", signer=url_signer), 
+    )
+    
+
+#@action('admin_register_sse_order', method=['GET'])
+#@action.uses(*admin_fixtures)
+def admin_register_sse_order():
+    response.content_type  = 'text/event-stream'
+    response.cache_control = 'no-cache'
+    yield 'retry: 100\n\n'
+    
+    
+    yield 'data: %i\n\n' % 1
+        
+    
+
+@action('admin_get_orders', method=['GET'])
+@action.uses(*admin_fixtures)
+def admin_get_orders():
     
     orders = db(db.orders).select(orderby=~db.orders.opened_date)
     return dict(
-        orders = orders
+        orders = orders.as_list()
     )
 
-
+@action('admin_fulfil_order', method=['POST'])
+@action.uses(*admin_fixtures)
+def admin_fulfil_order():
+    id = request.json.get("id")
+    db(db.orders.id == id).update(fulfilled = True)
+    return
 
 @action('admin_slides', method=['GET'])
 @action.uses(*admin_fixtures, file_uploader, 'admin_slides.html')
