@@ -189,8 +189,8 @@
             <div>
                 <ul>
                     <li>
-                        <div @click="add_topping()" class="button"> + Add Item</div>
-                        <button @click="save_toppings()" class="button has-text-info">
+                        <div @click="add_topping()" class="button backshadow"> + Add Item</div>
+                        <button @click="save_toppings()" class="button has-text-info backshadow">
                             Save</button>
                         <span v-if="topping_error" class="has-text-danger"> Error: please try again</span>
                     </li>
@@ -198,15 +198,15 @@
                         <br>
                     </li>
                     <li v-for="t in toppings">
-                        <div style="margin-bottom: 20px;" class="box">
-                            <label>Name:<input v-model="t.name" type="text">
+                        <div style="margin-bottom: 20px;" class="box greycard backshadow">
+                            <label><b>Name:</b><input v-model="t.name" type="text">
                             </label>
 
-                            <label>Description: <textarea v-model="t.description"></textarea>
+                            <label><b>Description: </b><textarea v-model="t.description"></textarea>
                             </label>
 
 
-                            <label>Price: <input v-model="t.price"></input>
+                            <label><b>Price:</b> <input v-model="t.price"></input>
                             </label>
 
 
