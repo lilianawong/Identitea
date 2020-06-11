@@ -12,9 +12,6 @@ class FileUpload(Fixture):
         self.dumpDir = dumpDir
         self.url = url
         self.signer = signer or URLSigner(session)
-        # Creates an action (an entry point for URL calls),
-        # mapped to the api method, that can be used to request pages
-        # for the table.
         self.__prerequisites__ = [session]
         args = list(filter(None, [session, db, auth, self.signer.verify()]))
         f = action.uses(*args)(self.api)
@@ -26,17 +23,10 @@ class FileUpload(Fixture):
         multiple instances of this form on the page."""
         return XML(FileUpload.FILE_UPLOAD.format(url=URL(self.url, 1, signer=self.signer), bindCb=bindCb, emitid=emitid))
 
-    def api(self, id=None):
-        """This API receives the file upload and does something with it.
-        @param id: id of the file uploaded.  This can be useful if the uploader
-        is used in multiple places in the page.
-        """
-        
+    def api(self, id=None):        
         f = request.files.get('file')
         filename = self.dumpDir + "/" + str(uuid.uuid4()) + "." + f.content_type.split("/")[1]
         outFile = open("apps/identitea/static/" +  filename, 'wb')
-
-
 
         if f is None:
             print("No file")
