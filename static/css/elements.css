@@ -38,7 +38,8 @@
 
 
 .niceimagemenu:hover{
-  border-color: #580a1f;
+  border: 10px solid #fff9cc;
+  
 }
 .modalniceimage{
   border-radius: 10px;
