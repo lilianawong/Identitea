@@ -2,11 +2,11 @@
 
 <div id="vue-target">
 
-    <div v-if="!cart_visible" class="has-background-white" @click="show_cart(true)" style="z-index: 99999999;border-radius: 90px;width: 65px;height: 65px;
-        position: fixed;bottom: 20px;right: 20px;text-align: center;">
-        <i style="font-size: 47px;  margin-top: 9px; color: #23d160;" class="fa fa-shopping-cart"
+    <div v-if="!cart_visible"   @click="show_cart(true)" style="z-index: 99999999;border-radius: 90px;width: 65px;height: 65px;
+        position: fixed;bottom: 20px;right: 20px;text-align: center;background-color: #1eb572 ;">
+        <i style="font-size: 47px;  margin-top: 9px; color: #000000;" class="fa fa-shopping-cart"
             aria-hidden="true"></i>
-        <div style="position: relative;font-size: 35px;bottom: 50px;color: #ff0000;text-shadow: 0px 0px 1px black;">
+        <div style="position: relative;font-size: 21px;bottom: 45px;color: #ffffff;text-shadow: 0px 0px 1px black;">
             {{cart.length}}</div>
     </div>
 
