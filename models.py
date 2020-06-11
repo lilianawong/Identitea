@@ -90,8 +90,11 @@ db.define_table("slides",
                 Field('title', 'text'),
                 Field('description', 'text'),
                 Field('price', 'text'),
-                Field('image', 'text') #network only?, upload to static/assets
+                Field('image', 'text')
                 )
+
+#the folowing tables are for the quiz
+#the quiz does not work yet... so these tables are not used for now
 
 
 db.define_table("questions",
