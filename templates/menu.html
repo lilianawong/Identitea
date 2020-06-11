@@ -20,7 +20,7 @@
                     <div class="level-left">
                         <div class="level-item">
                             <i style="font-size: 47px;" class="fa fa-shopping-cart" aria-hidden="true"></i>
-                            
+
                         </div>
                         <div class="level-item">
                             Cart
@@ -218,21 +218,7 @@
                                             30&#37;
                                         </label>
                                     </div>
-                                    <div class="control has-text-centered">
-                                        size:<br>
-                                        <label class="radio">
-                                            <input v-model="modal_size" value="Large" name="modal_size" type="radio">
-                                            Large
-                                        </label>
-                                        <label class="radio">
-                                            <input v-model="modal_size" value="Medium" name="modal_size" type="radio">
-                                            Medium
-                                        </label>
-                                        <label class="radio">
-                                            <input v-model="modal_size" value="Small" name="modal_size" type="radio">
-                                            Small
-                                        </label>
-                                    </div>
+
                                     <div class="control has-text-centered">
                                         Ice:<br>
                                         <label class="radio">
@@ -265,12 +251,26 @@
                                                 </div>
                                             </div>
 
-                                            <label class="is-pull-left"> Qty:
-                                                <input type="number" @keypress="isNumber($event)" min="0" step="1" v-model="modal_qty" value="1">
-                                            </label>
-                                            <div class="button" @click="add_to_cart()">
-                                                <i class="fa fa-cart-plus is-pull-right" aria-hidden="true"></i>
+                                            <div class="level is-mobile">
+                                                <div class="level-left">
+                                                    <div class="level-item">
+                                                        <label class="is-pull-left"> Qty:
+                                                            <input type="number" @keypress="isNumber($event)" min="0"
+                                                                step="1" v-model="modal_qty" value="1">
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <div class="level-right">
+                                                    <div class="level-item">
+                                                        <div class="button" @click="add_to_cart()">
+                                                            <i class="fa fa-cart-plus is-pull-right"
+                                                                aria-hidden="true"></i>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
+
+
                                     </div>
 
                                 </div>
