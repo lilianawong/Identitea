@@ -19,6 +19,9 @@ let init = (app) => {
         modal_qty: 1,
         modal_toppings: [],
         modal_sweet:"100",
+        modal_ice:"Yes",
+        modal_size:"Medium",
+
         cart: [],
         cart_visible: false
     };
@@ -95,6 +98,15 @@ let init = (app) => {
     app.methods = {
         // Complete.
         place_order:app.place_order,
+        isNumber: function(evt) {
+            evt = (evt) ? evt : window.event;
+            var charCode = (evt.which) ? evt.which : evt.keyCode;
+            if ((charCode > 31 && (charCode < 48 || charCode > 57)) && charCode === 46 || charCode === 45){
+              evt.preventDefault();;
+            } else {
+              return true;
+            }
+          },
         goto_page: function (page_name) {
 
             //pre-init
@@ -119,6 +131,8 @@ let init = (app) => {
                 qty: app.data.modal_qty,
                 extras: app.data.modal_toppings,
                 sweet:app.data.modal_sweet,
+                ice:app.data.modal_ice,
+                size:app.data.modal_size
             }
 
             //resolve toppings data

@@ -33,7 +33,9 @@ let init = (app) => {
             return {
                 item: i.item + " x " + i.qty,
                 details: [
+                    "size: " + i.size,
                     "sweetness: " + i.sweet + "%",
+                    "Ice:" + i.ice,
                     "extras: " + i.extras.reduce(function(acc,e){return acc + e.name + ", "},""),
                     "sp: " + i.special_request ? i.special_request : "None"
                 ]

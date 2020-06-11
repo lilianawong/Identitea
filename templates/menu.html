@@ -206,20 +206,44 @@
                                     <div class="control has-text-centered">
                                         Sweet:<br>
                                         <label class="radio">
-                                            <input v-model="modal_sweet" :value="30" name="modal_sweet" type="radio">
-                                            30&#37;
+                                            <input v-model="modal_sweet" value="100" name="modal_sweet" type="radio">
+                                            100&#37;
                                         </label>
                                         <label class="radio">
-                                            <input v-model="modal_sweet" :value="75" name="modal_sweet" type="radio">
+                                            <input v-model="modal_sweet" value="75" name="modal_sweet" type="radio">
                                             75&#37;
                                         </label>
                                         <label class="radio">
-                                            <input v-model="modal_sweet" :value="100" name="modal_sweet" type="radio">
-                                            100&#37;
+                                            <input v-model="modal_sweet" value="30" name="modal_sweet" type="radio">
+                                            30&#37;
                                         </label>
-
                                     </div>
-
+                                    <div class="control has-text-centered">
+                                        size:<br>
+                                        <label class="radio">
+                                            <input v-model="modal_size" value="Large" name="modal_size" type="radio">
+                                            Large
+                                        </label>
+                                        <label class="radio">
+                                            <input v-model="modal_size" value="Medium" name="modal_size" type="radio">
+                                            Medium
+                                        </label>
+                                        <label class="radio">
+                                            <input v-model="modal_size" value="Small" name="modal_size" type="radio">
+                                            Small
+                                        </label>
+                                    </div>
+                                    <div class="control has-text-centered">
+                                        Ice:<br>
+                                        <label class="radio">
+                                            <input v-model="modal_ice" value="Yes" name="modal_ice" type="radio">
+                                            Yes
+                                        </label>
+                                        <label class="radio">
+                                            <input v-model="modal_ice" value="No" name="modal_ice" type="radio">
+                                            No
+                                        </label>
+                                    </div>
                                 </div>
 
                                 <div class="column is-half">
@@ -242,7 +266,7 @@
                                             </div>
 
                                             <label class="is-pull-left"> Qty:
-                                                <input type="text" v-model="modal_qty" value="1">
+                                                <input type="number" @keypress="isNumber($event)" min="0" step="1" v-model="modal_qty" value="1">
                                             </label>
                                             <div class="button" @click="add_to_cart()">
                                                 <i class="fa fa-cart-plus is-pull-right" aria-hidden="true"></i>
