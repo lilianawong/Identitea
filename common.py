@@ -2,6 +2,7 @@
 This file defines cache, session, and translator T object for the app
 These are fixtures that every app needs so probably you will not be editing this file
 """
+
 import os
 from py4web import Session, Cache, Translator, DAL, Field
 from py4web.utils.auth import Auth
